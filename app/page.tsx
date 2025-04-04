@@ -1,5 +1,5 @@
-import SignInButton from "@/components/SignInButton";
-import Scanner from "@/components/Scanner";
+// import SignInButton from "@/components/SignInButton";
+// import Scanner from "@/components/Scanner";
 import Printer from "@/components/Printer";
 
 export default function Home() {
