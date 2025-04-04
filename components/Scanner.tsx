@@ -2,12 +2,15 @@
 import { Scanner as BarcodeScanner, IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { LinearProgress } from "@mui/material"
 import { useState } from "react";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { motion } from "motion/react";
 
 export default function Scanner() {
     let data: Record<number, string[]> = {};
     const [progress, setProgress] = useState(0);
     const [progressBuffer, setProgressBuffer] = useState(0);
-    const [description, setDescription] = useState("Use the device to scan the pixel area...");
+    const [description, setDescription] = useState("Use your device to scan the pixel area...");
+    const [pauseCamera, setPauseCamera] = useState(false);
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -59,8 +62,42 @@ export default function Scanner() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-            <div style={{ flex: 8, overflow: 'hidden' }}>
-                <BarcodeScanner onScan={handleScan} formats={["data_matrix"]} components={{ finder: false }} paused={progress == 100} sound={false}/>
+            <div style={{ flex: 8, overflow: 'hidden', position: 'relative' }}>
+                <BarcodeScanner
+                    onScan={handleScan}
+                    formats={["data_matrix"]}
+                    components={{ finder: false }}
+                    paused={pauseCamera}
+                    sound={false}
+                    styles={{ container: { filter: progress === 100 ? 'blur(20px)' : 'none', transition: 'filter 1s ease' } }}
+                />
+                {progress === 100 && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1, ease: "easeInOut" }}
+                        onAnimationComplete={() => {
+                            setPauseCamera(true);
+                        }}
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'green',
+                            zIndex: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            color: 'white',
+                            fontSize: '1.5em',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        <CheckCircleOutlineIcon sx={{ fontSize: "5em" }} />
+                    </motion.div>
+                )}
             </div>
             <div style={{ flex: 2, marginTop: "1em" }}>
                 <LinearProgress variant="buffer" value={progress} valueBuffer={progressBuffer} color={progress == 100 ? "success" : "primary"} />
