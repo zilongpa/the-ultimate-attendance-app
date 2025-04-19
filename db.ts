@@ -7,7 +7,10 @@ if (!MONGO_URI) {
 }
 
 const DB_NAME = "attendance-app";
+// User collection: contains user name, email, and role.
 export const USER_COLLECTION = "user-collection";
+// Attendance collection: contains attendance records for each user.
+// Each record contains user email and date.
 export const ATTENDANCE_COLLECTION = "attendance-collection";
 
 let client: MongoClient | null = null;
