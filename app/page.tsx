@@ -1,12 +1,14 @@
-// import SignInButton from "@/components/SignInButton";
-// import Scanner from "@/components/Scanner";
-import Printer from "@/components/Printer";
 
-export default function Home() {
+import { auth, signOut } from "@/auth";
+import { notFound } from "next/navigation";
+
+const HomePage = async () => {
+  const session = await auth();
+  // if (!session) return notFound();
   return (
-    <div style={{padding: "20px"}}>
-      {/* <SignInButton /> */}
-      <Printer />
-    </div>
+    <main>
+      <h1>TODO</h1>
+    </main>
   );
-}
+};
+export default HomePage;
