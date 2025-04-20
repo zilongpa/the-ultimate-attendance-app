@@ -12,7 +12,6 @@ export const USER_COLLECTION = "user-collection";
 // Each record contains user email and date.
 export const ATTENDANCE_COLLECTION = "attendance-collection";
 
-const uri = process.env.MONGO_URI
 const options = {
     serverApi: {
         version: ServerApiVersion.v1,
