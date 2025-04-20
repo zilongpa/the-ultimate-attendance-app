@@ -35,10 +35,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 // get user from db with the email
                 // if there is no user with the email, create new user
                 // else set the user data to token
-                const myUser = await db.myUser.findUnique({
+                let loginUser = await db.myUser.findUnique({
                     where: { email: user.email || "" },
                 });
-                if (!myUser) {
+                if (!loginUser) {
                     // create new user if not exists
                     const newUser: { email: string; name: string; role: string[] } = {
                         email: user.email || "",
@@ -52,7 +52,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     } else {
                         newUser.role.push(Role.STUDENT);
                     };
-                    await db.myUser.create({
+                    loginUser = await db.myUser.create({
                         data: {
                             email: newUser.email,
                             name: newUser.name,
@@ -63,7 +63,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token.email = user.email || "";
                 token.name = user.name || "";
                 token.img = user.image || "";
-                token.role = (myUser?.role || []) as Role[]; // Ensure role is explicitly typed as Role[]
+                token.role = (loginUser?.role || []) as Role[]; // Ensure role is explicitly typed as Role[]
             }
             return token; // Ensure token is always returned
         },

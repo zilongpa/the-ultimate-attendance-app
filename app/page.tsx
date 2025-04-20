@@ -1,10 +1,7 @@
-
-import { auth, signOut } from "@/auth";
-import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 
 const HomePage = async () => {
-  const session = await auth();
-  // if (!session) return notFound();
+  // const session = await auth();
   return (
     <main>
       <h1>TODO</h1>
