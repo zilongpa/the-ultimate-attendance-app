@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@auth/mongodb-adapter": "^3.8.0",
     "@auth/prisma-adapter": "^2.8.0",
     "@bwip-js/generic": "^4.5.3",
     "@emotion/cache": "^11.14.0",
@@ -19,27 +18,19 @@
     "@mui/material": "^7.0.1",
     "@mui/material-nextjs": "^7.0.0",
     "@prisma/client": "^6.6.0",
-    "@react-oauth/google": "^0.12.1",
     "@yudiel/react-qr-scanner": "^2.2.2-beta.2",
-    "jwt-decode": "^4.0.0",
     "mongodb": "^6.15.0",
     "motion": "^12.6.3",
     "next": "15.2.4",
     "next-auth": "^5.0.0-beta.25",
     "otpauth": "^9.4.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "styled-components": "^6.1.17"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/jwt-decode": "^2.2.1",
     "@types/next-auth": "^3.13.0",
-    "@types/node": "^20",
     "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.2.4",
     "prisma": "^6.6.0",
     "typescript": "^5"
   }

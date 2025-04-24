@@ -116,6 +116,7 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -153,24 +154,6 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
-exports.Prisma.AuthenticatorScalarFieldEnum = {
-  credentialID: 'credentialID',
-  userId: 'userId',
-  providerAccountId: 'providerAccountId',
-  credentialPublicKey: 'credentialPublicKey',
-  counter: 'counter',
-  credentialDeviceType: 'credentialDeviceType',
-  credentialBackedUp: 'credentialBackedUp',
-  transports: 'transports'
-};
-
-exports.Prisma.MyUserScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  role: 'role'
-};
-
 exports.Prisma.AttendanceScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -197,8 +180,6 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
   VerificationToken: 'VerificationToken',
-  Authenticator: 'Authenticator',
-  MyUser: 'MyUser',
   Attendance: 'Attendance'
 };
 

@@ -1,10 +1,11 @@
-// import { auth } from "@/auth";
+import { auth } from "@/auth";
 
 const HomePage = async () => {
-  // const session = await auth();
+  const session = await auth();
+  console.log("Session:", session);
   return (
     <main>
-      <h1>TODO</h1>
+      <h1>Your role is {session?.user?.role}</h1>
     </main>
   );
 };

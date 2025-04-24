@@ -17,15 +17,15 @@ datasource db {
 // This is the schema for NextAuth.js with MongoDB
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?         @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
-  Authenticator Authenticator[]
+  role          Role[]
+  attendance    Attendance[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -73,35 +73,11 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Optional for WebAuthn support
-model Authenticator {
-  credentialID         String  @id @map("_id")
-  userId               String  @db.ObjectId
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, credentialID])
-}
-
 // Custom models for the application
-
-model MyUser {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  email      String       @unique
-  role       Role[]
-  Attendance Attendance[]
-}
 
 model Attendance {
   id     String   @id @default(auto()) @map("_id") @db.ObjectId
-  user   MyUser   @relation(fields: [userId], references: [id])
+  user   User     @relation(fields: [userId], references: [id])
   userId String   @db.ObjectId
   date   DateTime @default(now())
 }

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react"
 
 export default function Printer() {
-    const totps = Array(4).fill(null).map(() => 
+    const totps = Array(4).fill(null).map(() =>
         new OTPAuth.TOTP({
             algorithm: "SHA1",
             digits: 8,
@@ -17,6 +17,7 @@ export default function Printer() {
 
     const [barcodeData, setBarcodeData] = useState(totps.map(totp => totp.generate()));
     const [isUpdating, setIsUpdating] = useState(false);
+
 
     useEffect(() => {
         const updateBarcode = () => {
@@ -31,7 +32,7 @@ export default function Printer() {
         const intervals = totps.map(totp => setInterval(updateBarcode, totp.period * 1000));
 
         return () => intervals.forEach(interval => clearInterval(interval));
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <motion.div
