@@ -5,13 +5,17 @@ import Barcode from "@/components/Barcode";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react"
 
-export default function Printer() {
-    const totps = Array(4).fill(null).map(() => 
+export default function Printer(props: { secrets: string[], period: number, digits: number }) {
+    if (props.secrets.length !== 4) {
+        throw new Error("Printer component requires exactly 4 secrets.");
+    }
+
+    const totps = Array(4).fill(null).map((index) =>
         new OTPAuth.TOTP({
             algorithm: "SHA1",
-            digits: 8,
-            period: 2,
-            secret: new OTPAuth.Secret(),
+            digits: props.digits,
+            period: props.period,
+            secret: props.secrets[index],
         })
     );
 
@@ -31,7 +35,7 @@ export default function Printer() {
         const intervals = totps.map(totp => setInterval(updateBarcode, totp.period * 1000));
 
         return () => intervals.forEach(interval => clearInterval(interval));
-    }, []);
+    }, [totps]);
 
     return (
         <motion.div
