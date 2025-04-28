@@ -65,9 +65,10 @@ export default async function RootLayout({
     ...(role === "professor"
       ? [
         {
-          segment: 'attendance-management',
-          title: 'Attendance Management',
+          segment: 'users',
+          title: 'Users',
           icon: <ManageAccountsIcon />,
+          pattern: 'users{/:userId}*',
         },
       ]
       : []),

@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS attendances (
 );
 `;
 
-import { Pool } from "@neondatabase/serverless"
+import { neon, Pool } from "@neondatabase/serverless"
 let pool: Pool;
 
 export function getPool(): Pool {
@@ -97,3 +97,6 @@ export function getPool(): Pool {
     return pool;
 }
 
+export function getSQL() {
+    return neon(`${process.env.DATABASE_URL}`);
+}

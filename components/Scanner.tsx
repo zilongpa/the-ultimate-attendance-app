@@ -1,3 +1,4 @@
+// By Junhui Huang
 "use client";
 import { Scanner as BarcodeScanner, IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { LinearProgress, Typography } from "@mui/material"
