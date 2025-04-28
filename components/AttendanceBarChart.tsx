@@ -1,19 +1,13 @@
-// By Kanghuan Xu
-// npm install @mui/material @emotion/react @emotion/styled @mui/x-charts
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, styled } from '@mui/material';
 import { BarChart, BarSeries } from '@mui/x-charts/BarChart';
 import type { AxisScaleType } from '@mui/x-charts/models/axis';
 
-interface AttendanceEntry {
-  date: string;
-  count: number;
-}
-
-interface AttendanceBarChartProps {
-  attendanceData: AttendanceEntry[];
-}
+type SessionAttendance = {
+  sessionDate: string;
+  attended: number;
+  absent: number;
+};
 
 const ChartContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -25,20 +19,53 @@ const ChartContainer = styled(Box)(({ theme }) => ({
   margin: '0 auto',
 }));
 
-const AttendanceBarChart: React.FC<AttendanceBarChartProps> = ({ attendanceData }) => {
-  const labels: string[] = attendanceData.map((entry) => entry.date);
-  const values: number[] = attendanceData.map((entry) => entry.count);
+const AttendanceBarChart: React.FC = () => {
+  const [data, setData] = useState<SessionAttendance[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/attendanceStats')
+      .then((res) => {
+        if (!res.ok) throw new Error('Network response was not ok');
+        return res.json();
+      })
+      .then((json: SessionAttendance[]) => {
+        setData(json);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Failed to load attendance data');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <Typography align="center">Loading attendance…</Typography>;
+  }
+  if (error) {
+    return <Typography color="error" align="center">{error}</Typography>;
+  }
+  if (data.length === 0) {
+    return <Typography align="center">No attendance data available</Typography>;
+  }
+
+  const labels = data.map(d =>
+    new Date(d.sessionDate).toLocaleDateString()
+  );
+  const attendedCounts = data.map((d) => d.attended);
+  const absentCounts = data.map((d) => d.absent);
 
   const series: BarSeries[] = [
-    { data: values, label: 'Attendees' },
+    { data: attendedCounts, label: 'Attended' },
+    { data: absentCounts, label: 'Absent' },
   ];
-
   const xAxis = [
     { data: labels, scaleType: 'band' as AxisScaleType, label: 'Date' },
   ];
-  const yAxis = [
-    { label: 'Count' },
-  ];
+  const yAxis = [{ label: 'Number of Students' }];
 
   return (
     <ChartContainer>
@@ -46,10 +73,10 @@ const AttendanceBarChart: React.FC<AttendanceBarChartProps> = ({ attendanceData 
         variant="h5"
         align="center"
         gutterBottom
-        sx={{ fontWeight: 600 }}>
-        Attendance Overview
+        sx={{ fontWeight: 600 }}
+      >
+        Attendance by Date
       </Typography>
-
       <Box sx={{ height: 400, width: '100%' }}>
         <BarChart
           series={series}

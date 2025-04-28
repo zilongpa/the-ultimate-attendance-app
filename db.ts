@@ -1,64 +1,64 @@
+// db.ts
 import { MongoClient, ServerApiVersion, Db } from "mongodb";
 
 const MONGO_URI = process.env.MONGO_URI as string;
 if (!MONGO_URI) {
-    throw new Error("MongoDB URI is not defined in environment variables.");
+  throw new Error("MongoDB URI is not defined in environment variables.");
 }
 
 const DB_NAME = "attendance-app";
-// User collection: contains user name, email, and role.
+
+// Collection names
 export const USER_COLLECTION = "user-collection";
 // Attendance collection: contains attendance records for each user.
 // Each record contains user email and date.
 export const ATTENDANCE_COLLECTION = "attendance-collection";
 
 const options = {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    },
-}
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+};
 
 let client: MongoClient | null = null;
 let db: Db | null = null;
 
+// Reuse client across hot reloads in development
 if (process.env.NODE_ENV === "development") {
-    let globalWithMongo = global as typeof globalThis & {
-        _mongoClient?: MongoClient
-    }
-
-    if (!globalWithMongo._mongoClient) {
-        globalWithMongo._mongoClient = new MongoClient(MONGO_URI, options);
-    }
-    client = globalWithMongo._mongoClient;
+  const globalWithMongo = global as typeof globalThis & { _mongoClient?: MongoClient };
+  if (!globalWithMongo._mongoClient) {
+    globalWithMongo._mongoClient = new MongoClient(MONGO_URI, options);
+  }
+  client = globalWithMongo._mongoClient;
 } else {
-    client = new MongoClient(MONGO_URI, options);
+  client = new MongoClient(MONGO_URI, options);
 }
 
-export default client;
-
-// async function connect(): Promise<Db> {
-//     if (!client) {
-//         client = new MongoClient(MONGO_URI);
-//         await client.connect();
-//     }
-//     return client.db(DB_NAME);
-// }
-
+// Returns a connected MongoClient
 export async function getClient(): Promise<MongoClient> {
-    if (!client) {
-        client = new MongoClient(MONGO_URI);
-        await client.connect();
-    }
-    return client;
+  if (!client) {
+    client = new MongoClient(MONGO_URI, options);
+    await client.connect();
+  }
+  return client;
 }
 
-// export default async function getCollection(collectionName: string) {
-//     if (!db) {
-//         db = await connect();
-//     }
-//     return db.collection(collectionName);
-// }
+// Returns the Db instance for "attendance-app"
+export async function getDb(): Promise<Db> {
+  if (!db) {
+    const _client = await getClient();
+    db = _client.db(DB_NAME);
+  }
+  return db;
+}
 
-// export { client, db };
+// Returns a typed collection reference
+export async function getCollection<T>(collectionName: string) {
+  const database = await getDb();
+  return database.collection<T>(collectionName);
+}
+
+// Default export in case you still want raw client
+export default client;
