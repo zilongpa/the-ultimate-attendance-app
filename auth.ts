@@ -1,4 +1,4 @@
-// By Junhui Huang
+// By Junhui Huang, Yiyun Sun
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import type { Provider } from "next-auth/providers";
@@ -8,6 +8,8 @@ import { getPool } from "@/db";
 const providers: Provider[] = [
     Google,
 ];
+
+const defaultEmails: string[] = JSON.parse(process.env.DEFAULT_PROFESSOR_EMAIL || "");
 
 export const providerMap = providers.map((provider) => {
     if (typeof provider === 'function') {
@@ -48,8 +50,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
                             [user.id]
                         );
                         token.role = result.rows[0]?.role || 'student';
-                        
-                        if (user.email === process.env.DEFAULT_PROFESSOR_EMAIL) {
+
+                        if (defaultEmails.includes(user?.email ?? "")) {
                             token.role = 'professor';
                         }
                     } finally {
