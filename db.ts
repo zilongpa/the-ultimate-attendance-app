@@ -70,7 +70,11 @@ CREATE TABLE IF NOT EXISTS sessions (
     type session_enum NOT NULL,
     date DATE NOT NULL,
     start_time TIMESTAMPTZ NOT NULL,
-    end_time TIMESTAMPTZ NOT NULL
+    end_time TIMESTAMPTZ NOT NULL,
+    secret1 VARCHAR(255) NOT NULL,
+    secret2 VARCHAR(255) NOT NULL,
+    secret3 VARCHAR(255) NOT NULL,
+    secret4 VARCHAR(255) NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS attendances (

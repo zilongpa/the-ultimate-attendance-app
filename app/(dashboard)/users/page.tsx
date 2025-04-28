@@ -1,6 +1,5 @@
 'use client';
 import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { Crud, DataSource, DataSourceCache } from '@toolpad/core/Crud';
 import { createOne, deleteOne, getMany, getOne, updateOne } from './actions';
@@ -93,7 +92,7 @@ export const usersDataSource: DataSource<User> = {
     },
 
     updateOne: async (userId, data) => {
-        let updatedUser = await updateOne(userId as string, data as Partial<User>);
+        const updatedUser = await updateOne(userId as string, data as Partial<User>);
 
         if (!updatedUser) {
             throw new Error('User not found');

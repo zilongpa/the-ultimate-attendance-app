@@ -11,9 +11,10 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import BallotIcon from '@mui/icons-material/Ballot';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
+import { NotificationsProvider } from '@toolpad/core/useNotifications';
 
 const BRANDING = {
-  title: 'The Ultimate Attendance App',
+  title: 'TUAA',
   logo: <img src="/logo.png" alt="TUAA logo" style={{ height: 72 }} />,
   homeUrl: 'https://github.com/zilongpa/the-ultimate-attendance-app'
 }
@@ -80,20 +81,22 @@ export default async function RootLayout({
         <title>{BRANDING.title}</title>
       </head>
       <body>
-        <SessionProvider session={session}>
-          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-            <Suspense fallback={<LinearProgress />}>
-              <NextAppProvider
-                navigation={NAVIGATION}
-                branding={BRANDING}
-                session={session}
-                authentication={AUTHENTICATION}
-              >
-                {children}
-              </NextAppProvider>
-            </Suspense>
-          </AppRouterCacheProvider>
-        </SessionProvider>
+        <NotificationsProvider>
+          <SessionProvider session={session}>
+            <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+              <Suspense fallback={<LinearProgress />}>
+                <NextAppProvider
+                  navigation={NAVIGATION}
+                  branding={BRANDING}
+                  session={session}
+                  authentication={AUTHENTICATION}
+                >
+                  {children}
+                </NextAppProvider>
+              </Suspense>
+            </AppRouterCacheProvider>
+          </SessionProvider>
+        </NotificationsProvider>;
       </body>
     </html>
   );
