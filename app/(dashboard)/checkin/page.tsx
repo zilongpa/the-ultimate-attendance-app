@@ -1,6 +1,6 @@
 // By Junhui Huang
 import Scanner from "@/components/Scanner";
-import * as OTPAuth from "otpauth";
+// import * as OTPAuth from "otpauth";
 
 export default function Scan() {
   return (
@@ -12,6 +12,7 @@ function validate(data: Record<number, string[]>, secrets: string[], period: num
   if (secrets.length !== 4) {
     throw new Error("Validate function requires exactly 4 secrets.");
   }
+  console.log(secrets, period, digits);
 
   return null;
 
