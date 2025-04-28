@@ -1,3 +1,4 @@
+// By Kanghuan Xu
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, styled } from '@mui/material';
 import { BarChart, BarSeries } from '@mui/x-charts/BarChart';
@@ -6,9 +7,10 @@ import type { AxisScaleType } from '@mui/x-charts/models/axis';
 type SessionAttendance = {
   sessionDate: string;
   attended: number;
-  absent: number;
+  absent: number;     
 };
 
+// Styled wrapper
 const ChartContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
   backgroundColor: theme.palette.background.paper,
@@ -20,28 +22,31 @@ const ChartContainer = styled(Box)(({ theme }) => ({
 }));
 
 const AttendanceBarChart: React.FC = () => {
+  // Local state: the fetched attendance data, plus loading/error flags
   const [data, setData] = useState<SessionAttendance[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch stats once on mount
   useEffect(() => {
-    fetch('/api/attendanceStats')
+    fetch('/api/attendanceStats')   
       .then((res) => {
         if (!res.ok) throw new Error('Network response was not ok');
-        return res.json();
+        return res.json();              
       })
       .then((json: SessionAttendance[]) => {
-        setData(json);
+        setData(json);                      
       })
       .catch((err) => {
         console.error(err);
-        setError('Failed to load attendance data');
+        setError('Failed to load attendance data');  
       })
       .finally(() => {
         setLoading(false);
       });
   }, []);
 
+  // Render loading, error, or empty states first
   if (loading) {
     return <Typography align="center">Loading attendance…</Typography>;
   }
@@ -52,21 +57,23 @@ const AttendanceBarChart: React.FC = () => {
     return <Typography align="center">No attendance data available</Typography>;
   }
 
+  // Prepare labels and series arrays for the chart
   const labels = data.map(d =>
     new Date(d.sessionDate).toLocaleDateString()
   );
   const attendedCounts = data.map((d) => d.attended);
-  const absentCounts = data.map((d) => d.absent);
+  const absentCounts   = data.map((d) => d.absent);
 
   const series: BarSeries[] = [
     { data: attendedCounts, label: 'Attended' },
-    { data: absentCounts, label: 'Absent' },
+    { data: absentCounts,   label: 'Absent'   },
   ];
   const xAxis = [
     { data: labels, scaleType: 'band' as AxisScaleType, label: 'Date' },
   ];
   const yAxis = [{ label: 'Number of Students' }];
 
+  // Titled chart inside styled container
   return (
     <ChartContainer>
       <Typography
