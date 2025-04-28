@@ -1,4 +1,5 @@
 // By Junhui Huang
+// Schema by Yiyun Sun
 const schema = `
 DO $$
 BEGIN
@@ -82,7 +83,7 @@ CREATE TABLE IF NOT EXISTS attendances (
 );
 `;
 
-import { neon, Pool } from "@neondatabase/serverless"
+import { neon, NeonQueryFunction, Pool } from "@neondatabase/serverless"
 let pool: Pool;
 
 export function getPool(): Pool {
@@ -97,6 +98,6 @@ export function getPool(): Pool {
     return pool;
 }
 
-export function getSQL() {
+export function getSQL(): NeonQueryFunction<false, false> {
     return neon(`${process.env.DATABASE_URL}`);
 }
