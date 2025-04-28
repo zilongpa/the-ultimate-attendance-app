@@ -4,7 +4,6 @@ import { LinearProgress, Typography } from "@mui/material"
 import { useState } from "react";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { motion } from "motion/react";
-import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
 
 export default function Scanner() {
