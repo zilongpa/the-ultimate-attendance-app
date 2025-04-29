@@ -47,10 +47,10 @@ export default async function RootLayout({
     ...(role === "assistant" || role === "professor"
       ? [
         {
-          segment: "new-session",
+          segment: "code",
           title: "Create Session",
           icon: <LeaderboardIcon />,
-          pattern: "/new-session",
+          pattern: "/code",
         },
         {
           segment: "class-attendance",
