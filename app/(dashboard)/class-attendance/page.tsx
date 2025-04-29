@@ -1,7 +1,7 @@
 // By Yiyun Sun
 "use client";
 
-import { Box, Button, Menu, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchData } from "./sqlAction";
@@ -13,7 +13,7 @@ interface Session {
 
 export default function ClassAttendancePage() {
 
-    const [chosenSession, setChosenSession] = useState<Number>(0);
+    const [chosenSession, setChosenSession] = useState<number>(0);
     const [sessions, setSessions] = useState<Session[]>([]);
 
     useEffect(() => {
@@ -68,4 +68,4 @@ export default function ClassAttendancePage() {
             > Submit </Button>
         </Box>
     );
-}
+}   

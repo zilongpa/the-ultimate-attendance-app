@@ -18,7 +18,7 @@ interface StudentAttendance {
 
 export default function ClassAttendancePage() {
 
-    const [chosenStudentId, setChosenStudentId] = useState<Number>(0);
+    const [chosenStudentId, setChosenStudentId] = useState<number>(0);
     const [students, setStudents] = useState<Student[]>([]);
     const [attendanceData, setAttendanceData] = useState<StudentAttendance[]>([]);
 

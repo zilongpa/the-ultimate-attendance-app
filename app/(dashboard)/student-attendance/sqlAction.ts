@@ -2,14 +2,14 @@
 
 import { getSQL } from "@/db";
 
-interface StudentAttendance {
-    id: number;
-    name: string;
-    email: string;
-    attendance: {
-        time: Date;
-    }[];
-}
+// interface StudentAttendance {
+//     id: number;
+//     name: string;
+//     email: string;
+//     attendance: {
+//         time: Date;
+//     }[];
+// }
 
 export default async function sqlAction(query: string) {
     const sql = getSQL();
