@@ -48,7 +48,7 @@ export default async function newSession() {
                 throw new Error("Failed to create session. Please try again.");
             };
 
-            return redirect(`/dashboard/class-attendance/${sessionID}`); // Redirect to the session page after creation
+            return redirect(`/class-attendance/${sessionID}`); // Redirect to the session page after creation
         }}>
             <InputLabel
                 htmlFor="type-select"
