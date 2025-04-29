@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS sessions (
     secret1 VARCHAR(255) NOT NULL,
     secret2 VARCHAR(255) NOT NULL,
     secret3 VARCHAR(255) NOT NULL,
-    secret4 VARCHAR(255) NOT NULL,
+    secret4 VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS attendances (

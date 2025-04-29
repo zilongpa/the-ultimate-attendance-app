@@ -6,7 +6,7 @@ import { providerMap, signIn } from '@/auth';
 export default function SignIn() {
     return (
         <SignInPage
-            localeText={{ signInTitle: 'Login to TAUU', to: '', signInSubtitle: 'Please Login with your school Google Account' }}
+            localeText={{ signInTitle: 'Login to TUAA', to: '', signInSubtitle: 'Please Login with your school Google Account' }}
             providers={providerMap}
             signIn={async (
                 provider: AuthProvider,

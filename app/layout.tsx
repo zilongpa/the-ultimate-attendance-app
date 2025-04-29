@@ -81,10 +81,11 @@ export default async function RootLayout({
         <title>{BRANDING.title}</title>
       </head>
       <body>
-        <NotificationsProvider>
+        
           <SessionProvider session={session}>
             <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-              <Suspense fallback={<LinearProgress />}>
+            <Suspense fallback={<LinearProgress />}>
+              <NotificationsProvider>
                 <NextAppProvider
                   navigation={NAVIGATION}
                   branding={BRANDING}
@@ -93,10 +94,10 @@ export default async function RootLayout({
                 >
                   {children}
                 </NextAppProvider>
+              </NotificationsProvider>
               </Suspense>
             </AppRouterCacheProvider>
           </SessionProvider>
-        </NotificationsProvider>;
       </body>
     </html>
   );

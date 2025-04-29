@@ -8,7 +8,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-export default function Scanner({ onValidate, period }: { onValidate: (data: Record<number, string[]>) => string | null, period: number }) {
+export default function Scanner({ submitAction, period }: { submitAction: (data: Record<number, string[]>) => Promise<string | null>, period: number }) {
     const devices = useDevices();
     let data: Record<number, string[]> = {};
     const [progress, setProgress] = useState(0);
@@ -26,7 +26,7 @@ export default function Scanner({ onValidate, period }: { onValidate: (data: Rec
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    const handleScan = (detectedCodes: IDetectedBarcode[]) => {
+    const handleScan = async (detectedCodes: IDetectedBarcode[]) => {
         if (timeoutId) {
             clearTimeout(timeoutId);
             timeoutId = null;
@@ -59,7 +59,7 @@ export default function Scanner({ onValidate, period }: { onValidate: (data: Rec
 
         if (consecutiveCount >= 4) {
             setDescription("Validating... Please wait.");
-            const result = onValidate(data);
+            const result = await submitAction(data);
             if (result) {
                 setDescription("Scan failed. Please try again.");
                 setProgress(0);
