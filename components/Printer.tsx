@@ -45,7 +45,7 @@ export default function Printer(props: { secrets: string[], period: number, digi
                 filter: isUpdating ? "blur(10px)" : "blur(0px)",
             }}
             transition={{ duration: 0.3 }}
-            style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px", backgroundColor: "white", padding: "1em", borderRadius: "0.5em" }}
         >
             {barcodeData.map((data, index) => (
                 <Barcode key={index} data={data} rotate={index % 4 as 0 | 1 | 2 | 3} />
