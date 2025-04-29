@@ -4,12 +4,10 @@ import Scanner from "@/components/Scanner";
 import * as OTPAuth from "otpauth";
 import { getSQL } from "@/db";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
 export default function CheckIn() {
   async function validate(data: Record<number, string[]>): Promise<string | null> {
     "use server";
-    return null;
     const secrets = [new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8];
     const period = 2;
     const digits = 8;
