@@ -1,14 +1,19 @@
 // By Junhui Huang
+// By Yiyun Sun
 import Scanner from "@/components/Scanner";
 import * as OTPAuth from "otpauth";
+import { getSQL } from "@/db";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default function CheckIn() {
   async function validate(data: Record<number, string[]>): Promise<string | null> {
     "use server";
-    return null;
     const secrets = [new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8];
     const period = 2;
     const digits = 8;
+
+    const session = await auth();
 
     if (secrets.length !== 4) {
       throw new Error("Validate function requires exactly 4 secrets.");
@@ -60,11 +65,29 @@ export default function CheckIn() {
     }
     if (Object.keys(validatedData).length < 4) {
       return "Not enough valid data after validation. Need at least 4 intervals with 50% of the valid pixels.";
+    } else {
+      // Get newest session ID
+      const sql = getSQL();
+      const sessionId = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
+      if (sessionId.length === 0) {
+        throw new Error("No session ID found.");
+      }
+      const thisSessionId = sessionId[0].id;
+      // Get self user id
+      const userId = await sql`SELECT id FROM users WHERE email = ${session?.user.email};`;
+      if (userId.length === 0) {
+        throw new Error("No user ID found.");
+      }
+      const thisUserId = userId[0].id;
+      // Insert into attendance table
+      const attendance = await sql`INSERT INTO attendance (session_id, user_id, check_in_time) VALUES (${thisSessionId}, ${thisUserId}, ${Date.now()}) RETURNING id;`;
+      if (attendance.length === 0) {
+        throw new Error("Failed to insert attendance record.");
+      }
     }
 
     console.log("Validated data:", validatedData);
-    return null;
-
+    return redirect("/");
   }
 
 
