@@ -33,10 +33,10 @@ export default async function RootLayout({
   const role = session?.user?.role;
   const NAVIGATION: Navigation = [
     {
-      segment: "checkin",
+      segment: "scan",
       title: "Check In",
       icon: <HowToVoteIcon />,
-      pattern: "checkin",
+      pattern: "scan",
     },
     {
       segment: "attendance",
