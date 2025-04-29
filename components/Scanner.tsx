@@ -2,7 +2,7 @@
 "use client";
 import { Scanner as BarcodeScanner, IDetectedBarcode, useDevices } from "@yudiel/react-qr-scanner";
 import { FormControl, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
@@ -15,14 +15,12 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
     const [progressBuffer, setProgressBuffer] = useState(0);
     const [description, setDescription] = useState("Use your device to scan the pixel area...");
     const [pauseCamera, setPauseCamera] = useState(false);
-    const [deviceId, setDeviceId] = useState<string | null>(null);
+    let savedDeviceId = null;
+    try {
+        savedDeviceId = localStorage.getItem("deviceId")
+    } catch { }
+    const [deviceId, setDeviceId] = useState<string | null>(savedDeviceId);
     const [isValid, setIsValid] = useState(false);
-
-    useEffect(() => {
-        if (devices.length > 0) {
-            setDeviceId(devices[0].deviceId);
-        }
-    }, [devices]);
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -60,8 +58,9 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
         if (consecutiveCount >= 4) {
             setDescription("Validating... Please wait.");
             const result = await submitAction(data);
+            console.log("Validation result:", result);
             if (result) {
-                setDescription("Scan failed. Please try again.");
+                setDescription(result);
                 setProgress(0);
                 data = {};
             } else {
@@ -85,11 +84,11 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
     return (
         <BarcodeScanner
             constraints={{
-                deviceId: deviceId || undefined
+                deviceId: deviceId || undefined,
             }}
             onScan={handleScan}
             onError={(error) => {
-                notifications.show(error as string, {
+                notifications.show(`Unable to activate scanner: ${String(error)}`, {
                     severity: "error",
                     autoHideDuration: 3000,
                 });
@@ -129,7 +128,7 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
                     <CheckCircleOutlineIcon sx={{ fontSize: "5em" }} />
                 </motion.div>
             )}
-            {deviceId !== null && (
+            {devices.length > 0 && (
                 <div
                     style={{
                         position: 'absolute',
@@ -150,7 +149,13 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
                             color="warning"
                             value={deviceId}
                             label="Camera"
-                            onChange={(e) => { setDeviceId(e.target.value) }}
+                            onChange={(e) => {
+                                const value = e.target.value
+                                if (value) {
+                                    localStorage.setItem("deviceId", value)
+                                    setDeviceId(value)
+                                }
+                            }}
                             sx={{
                                 color: 'white',
                             }}
