@@ -1,10 +1,10 @@
 // By Yiyun Sun
-import { getPool, getSQL } from "@/db";
-import { NeonQueryFunction, Pool } from "@neondatabase/serverless";
+import { getSQL } from "@/db";
+import { NeonQueryFunction } from "@neondatabase/serverless";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-const dbString = "INSERT INTO sessions () "
+// const dbString = "INSERT INTO sessions () "
 
 const sessionTypes: string[] = ['lecture', 'lab', 'discussion']
 
