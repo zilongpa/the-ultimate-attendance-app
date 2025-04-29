@@ -8,7 +8,6 @@ import { auth } from "@/auth";
 export default function CheckIn() {
   async function validate(data: Record<number, string[]>): Promise<string | null> {
     "use server";
-    return null;
     const secrets = [new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8];
     const period = 2;
     const digits = 8;
@@ -70,19 +69,19 @@ export default function CheckIn() {
       const sql = getSQL();
       const sessionId = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
       if (sessionId.length === 0) {
-        throw new Error("No session ID found.");
+        return ("No session ID found.");
       }
       const thisSessionId = sessionId[0].id;
       // Get self user id
       const userId = await sql`SELECT id FROM users WHERE email = ${session?.user.email};`;
       if (userId.length === 0) {
-        throw new Error("No user ID found.");
+        return ("No user ID found.");
       }
       const thisUserId = userId[0].id;
       // Insert into attendance table
-      const attendance = await sql`INSERT INTO attendance (session_id, user_id, check_in_time) VALUES (${thisSessionId}, ${thisUserId}, ${Date.now()}) RETURNING id;`;
+      const attendance = await sql`INSERT INTO attendances (session_id, student_id, check_in_time) VALUES (${thisSessionId}, ${thisUserId}, ${new Date().toISOString()}) RETURNING id;`;
       if (attendance.length === 0) {
-        throw new Error("Failed to insert attendance record.");
+        return ("Failed to insert attendance record.");
       }
     }
 
