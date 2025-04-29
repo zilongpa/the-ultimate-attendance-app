@@ -15,11 +15,14 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
     const [progressBuffer, setProgressBuffer] = useState(0);
     const [description, setDescription] = useState("Use your device to scan the pixel area...");
     const [pauseCamera, setPauseCamera] = useState(false);
-    let savedDeviceId = null;
+    let savedDeviceId = "";
     try {
-        savedDeviceId = localStorage.getItem("deviceId")
+        const storedDeviceId = localStorage.getItem("deviceId")
+        if (storedDeviceId) {
+            savedDeviceId = storedDeviceId;
+        }
     } catch { }
-    const [deviceId, setDeviceId] = useState<string | null>(savedDeviceId);
+    const [deviceId, setDeviceId] = useState(savedDeviceId);
     const [isValid, setIsValid] = useState(false);
 
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
