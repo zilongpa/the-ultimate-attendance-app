@@ -4,7 +4,6 @@ import Scanner from "@/components/Scanner";
 import * as OTPAuth from "otpauth";
 import { getSQL } from "@/db";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
 export default function CheckIn() {
   async function validate(data: Record<number, string[]>): Promise<string | null> {
