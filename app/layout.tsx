@@ -47,10 +47,10 @@ export default async function RootLayout({
     ...(role === "assistant" || role === "professor"
       ? [
         {
-          segment: "new-session",
+          segment: "code",
           title: "Create Session",
           icon: <LeaderboardIcon />,
-          pattern: "/new-session",
+          pattern: "/code",
         },
         {
           segment: "class-attendance",
@@ -81,9 +81,9 @@ export default async function RootLayout({
         <title>{BRANDING.title}</title>
       </head>
       <body>
-
-        <SessionProvider session={session}>
-          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+        
+          <SessionProvider session={session}>
+            <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <Suspense fallback={<LinearProgress />}>
               <NotificationsProvider>
                 <NextAppProvider
@@ -95,9 +95,9 @@ export default async function RootLayout({
                   {children}
                 </NextAppProvider>
               </NotificationsProvider>
-            </Suspense>
-          </AppRouterCacheProvider>
-        </SessionProvider>
+              </Suspense>
+            </AppRouterCacheProvider>
+          </SessionProvider>
       </body>
     </html>
   );
