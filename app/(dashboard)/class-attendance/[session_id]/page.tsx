@@ -1,12 +1,8 @@
 import { DataSourceCache } from "@toolpad/core";
 import { getSQL } from "@/db";
 import Printer from "@/components/Printer";
-import GetAttendanceCurd from "./AttendanceCurd";
-import sqlAction from "./sqlAction";
-import { fetchData } from "./sqlAction";
 import { Box } from "@mui/material";
 import StaticAttendanceTable from "./StaticAttendanceTable";
-import { Attendance } from "./types";
 
 
 
