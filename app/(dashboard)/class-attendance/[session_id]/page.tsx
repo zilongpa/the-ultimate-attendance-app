@@ -1,4 +1,4 @@
-import { DataSourceCache } from "@toolpad/core";
+// import { DataSourceCache } from "@toolpad/core";
 import { getSQL } from "@/db";
 import Printer from "@/components/Printer";
 import { Box } from "@mui/material";
@@ -11,7 +11,7 @@ export default async function GetSessionAttendance({
 }: {
     params: Promise<{ session_id: string }>;
 }) {
-    const attendanceCache = new DataSourceCache();
+    // const attendanceCache = new DataSourceCache();
     const sql = getSQL();
     const { session_id } = await params;
     const thisSessionId = Number(session_id);

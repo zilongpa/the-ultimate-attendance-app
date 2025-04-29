@@ -18,10 +18,11 @@ export default function StaticAttendanceTable(
 
     React.useEffect(() => {
         const fetch = async () => {
+            // "use server";
             try {
-                "use server";
                 const result = await fetchData(props.session_id);
                 setData(result);
+                return;
             } catch (error) {
                 console.error("Error fetching attendance data:", error);
             }

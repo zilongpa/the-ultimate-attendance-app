@@ -35,7 +35,7 @@ export default function Printer(props: { secrets: string[], period: number, digi
         const intervals = totps.map(totp => setInterval(updateBarcode, totp.period * 1000));
 
         return () => intervals.forEach(interval => clearInterval(interval));
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <motion.div

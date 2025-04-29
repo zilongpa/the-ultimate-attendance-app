@@ -36,6 +36,7 @@ export default async function SettingsPage() {
   // 3. Server action to update
   async function handleUpdate(formData: FormData) {
     "use server";
+    if (!user) throw new Error("User not found");
     const updated = await updateOne(user.id.toString(), {
       name: formData.get("name") as string,
     });
