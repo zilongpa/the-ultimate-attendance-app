@@ -70,7 +70,7 @@ export default function Scan() {
         let isValid = false;
         for (const totp of totps) {
           try {
-            console.log(`Validating ${value} against ${totp.secret.utf8} at timestamp ${timestamp}, ${totp.validate({ token: value, timestamp: timestamp * 1000 * period }) }`);
+            console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${totp.validate({ token: value, timestamp: timestamp * 1000 * period }) }`);
             if (totp.validate({ token: value, timestamp: timestamp * 1000 * period }) !== null) {
               isValid = true;
               break;

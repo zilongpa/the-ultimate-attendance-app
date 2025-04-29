@@ -34,7 +34,7 @@ export default async function newSession() {
             const start_time = currentTime.toISOString();
             const end_time = endTime.toISOString();
             const date = formatDateForSQL(currentTime);
-            const sessionSecrets = new Array(4).fill(null).map(() => new OTPAuth.Secret().utf8);
+            const sessionSecrets = new Array(4).fill(null).map(() => new OTPAuth.Secret().base32);
 
             try {
                 const res = await dbConn`
