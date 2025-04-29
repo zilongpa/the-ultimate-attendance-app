@@ -8,7 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Attendance } from "./types";
+import { Attendance } from "../types";
 import { fetchData } from "./sqlAction";
 
 export default function StaticAttendanceTable(

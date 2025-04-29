@@ -11,6 +11,7 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import BallotIcon from '@mui/icons-material/Ballot';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
+import HomeIcon from '@mui/icons-material/Home';
 import { NotificationsProvider } from '@toolpad/core/useNotifications';
 
 const BRANDING = {
@@ -32,6 +33,12 @@ export default async function RootLayout({
   const session = await auth();
   const role = session?.user?.role;
   const NAVIGATION: Navigation = [
+    {
+      segment: "",
+      title: "Home",
+      icon: <HomeIcon />,
+      pattern: "/",
+    },
     {
       segment: "scan",
       title: "Check In",
@@ -56,8 +63,14 @@ export default async function RootLayout({
           segment: "class-attendance",
           title: "Class Attendance",
           icon: <BallotIcon />,
-          pattern: "campaigns/1/ballots",
+          pattern: "/class-attendance",
         },
+        {
+          segment: "student-attendance",
+          title: "Student Attendance",
+          icon: <TransferWithinAStationIcon />,
+          pattern: "/student-attendance",
+        }
       ]
       : []),
     {

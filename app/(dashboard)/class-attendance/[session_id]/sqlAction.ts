@@ -1,7 +1,7 @@
 "use server";
 
 import { getSQL } from "@/db";
-import { Attendance } from "./types";
+import { Attendance } from "../types";
 
 export default async function sqlAction(query: string) {
     const sql = getSQL();
