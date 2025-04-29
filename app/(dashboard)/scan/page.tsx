@@ -8,14 +8,34 @@ import { auth } from "@/auth";
 export default function Scan() {
   async function validate(data: Record<number, string[]>): Promise<string | null> {
     "use server";
-    const secrets = [new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8, new OTPAuth.Secret().utf8];
-    const period = 2;
-    const digits = 8;
-
+    const sql = getSQL();
+    const period = process.env.TOTP_PERIOD ? Number(process.env.TOTP_PERIOD) : 2;
+    const digits = process.env.TOTP_DIGITS ? Number(process.env.TOTP_DIGITS) : 8;
     const session = await auth();
 
-    if (secrets.length !== 4) {
-      throw new Error("Validate function requires exactly 4 secrets.");
+    const sessionQueryResult = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
+    if (sessionQueryResult.length === 0) {
+      return "No session ID found.";
+    }
+
+    const classSessionId = sessionQueryResult[0].id;
+
+    const secretsQueryResult = await sql`SELECT secret1, secret2, secret3, secret4 FROM sessions WHERE id = ${classSessionId};`;
+    if (secretsQueryResult.length === 0) {
+      return "No secrets found for the session.";
+    }
+    console.log(secretsQueryResult[0]);
+
+    let secrets = null;
+    try {
+      secrets = [
+        secretsQueryResult[0].secret1,
+        secretsQueryResult[0].secret2,
+        secretsQueryResult[0].secret3,
+        secretsQueryResult[0].secret4,
+      ];
+    } catch {
+      return "Invalid number of secrets found for the session.";
     }
 
     const totps = Array(4).fill(null).map((index) =>
@@ -47,16 +67,21 @@ export default function Scan() {
       validatedData[timestamp] = [];
 
       for (const value of values) {
+        let isValid = false;
         for (const totp of totps) {
           try {
-            if (totp.validate({ token: value, timestamp: timestamp * 1000 * period }) === 0) {
+            console.log(`Validating ${value} against ${totp.secret.utf8} at timestamp ${timestamp}, ${totp.validate({ token: value, timestamp: timestamp * 1000 * period }) }`);
+            if (totp.validate({ token: value, timestamp: timestamp * 1000 * period }) !== null) {
+              isValid = true;
               break;
             }
           } catch {
             continue;
           }
         }
-        validatedData[timestamp].push(value);
+        if (isValid) {
+          validatedData[timestamp].push(value);
+        }
       }
     }
 
@@ -83,27 +108,24 @@ export default function Scan() {
         consecutiveCount = 1;
       }
     }
+    
 
     if (consecutiveCount < 4) {
       return "Not enough consecutive intervals. Need at least 4 consecutive intervals.";
     }
 
-    const sql = getSQL();
-    const sessionId = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
-    if (sessionId.length === 0) {
-      return ("No session ID found.");
+    const thisUserId = session?.user.id;
+
+    // Check if the user already exists in the attendance table
+    const existingAttendance = await sql`SELECT id FROM attendances WHERE session_id = ${classSessionId} AND student_id = ${thisUserId};`;
+    if (existingAttendance.length > 0) {
+      return "You are already in.";
     }
-    const thisSessionId = sessionId[0].id;
-    // Get self user id
-    const userId = await sql`SELECT id FROM users WHERE email = ${session?.user.email};`;
-    if (userId.length === 0) {
-      return ("No user ID found.");
-    }
-    const thisUserId = userId[0].id;
+
     // Insert into attendance table
-    const attendance = await sql`INSERT INTO attendances (session_id, student_id, check_in_time) VALUES (${thisSessionId}, ${thisUserId}, ${new Date().toISOString()}) RETURNING id;`;
+    const attendance = await sql`INSERT INTO attendances (session_id, student_id, check_in_time) VALUES (${classSessionId}, ${thisUserId}, ${new Date().toISOString()}) RETURNING id;`;
     if (attendance.length === 0) {
-      return ("Failed to insert attendance record.");
+      return "Failed to insert attendance record.";
     }
 
     return null;
