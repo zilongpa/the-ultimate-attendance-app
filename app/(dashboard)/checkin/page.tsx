@@ -87,7 +87,7 @@ export default function CheckIn() {
     }
 
     console.log("Validated data:", validatedData);
-    return redirect("/");
+    return null;
   }
 
 
