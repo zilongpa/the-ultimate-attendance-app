@@ -21,12 +21,12 @@ function formatDateForSQL(date: Date): string {
 }
 
 export default async function newSession() {
-    const sessionDuration = Number(process.env.SESSION_DURATION_MINUTES) || 10;
+    const sessionDuration = Number(10) || 10;
     return (
         <form action={async (formData: FormData) => {
             "use server";
             let sessionID;
-            const sessionDuration = Number(process.env.SESSION_DURATION_MINUTES) || 10;
+            const sessionDuration = Number(10) || 10;
             const type = formData.get("type") as string;
             const currentTime = new Date();
             const endTime = new Date(currentTime);

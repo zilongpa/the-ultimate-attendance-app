@@ -94,7 +94,6 @@ export default async function RootLayout({
         <title>{BRANDING.title}</title>
       </head>
       <body>
-
         <SessionProvider session={session}>
           <AppRouterCacheProvider options={{ enableCssLayer: true }}>
             <Suspense fallback={<LinearProgress />}>

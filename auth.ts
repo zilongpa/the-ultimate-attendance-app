@@ -9,7 +9,10 @@ const providers: Provider[] = [
     Google,
 ];
 
-const defaultEmails: string[] = JSON.parse(process.env.DEFAULT_PROFESSOR_EMAIL || "");
+const defaultProfessorsEmails: string[] = (process.env.DEFAULT_PROFESSORS_EMAILS || "")
+    .split(",")
+    .map((email) => email.trim())
+    .filter((email) => email !== "");
 
 export const providerMap = providers.map((provider) => {
     if (typeof provider === 'function') {
@@ -34,12 +37,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
         callbacks: {
             authorized({ auth: session, request: { nextUrl } }) {
                 const isLoggedIn = !!session?.user;
-                const isPublicPage = nextUrl.pathname.startsWith('/public');
-
-                if (isPublicPage || isLoggedIn) {
-                    return true;
-                }
-                return false;
+                return isLoggedIn;
             },
             async jwt({ token, user }) {
                 if (user) {
@@ -51,7 +49,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
                         );
                         token.role = result.rows[0]?.role || 'student';
 
-                        if (defaultEmails.includes(user?.email ?? "")) {
+                        if (defaultProfessorsEmails.includes(user?.email ?? "")) {
                             token.role = 'professor';
                         }
                     } finally {
