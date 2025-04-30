@@ -59,10 +59,10 @@ export default async function RootLayout({
           pattern: "/sessions{/:sessionId}?",
         },
         {
-          segment: "student-attendance",
+          segment: "attendances",
           title: "Student Attendance",
           icon: <TransferWithinAStationIcon />,
-          pattern: "/student-attendance",
+          pattern: "attendances{/:userId}?",
         }
       ]
       : []),

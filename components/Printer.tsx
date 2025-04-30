@@ -1,3 +1,4 @@
+// By Junhui Huang
 "use client";
 import React from "react";
 import * as OTPAuth from "otpauth";
@@ -5,16 +6,16 @@ import Barcode from "@/components/Barcode";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react"
 
-export default function Printer(props: { secrets: string[], period: number, digits: number }) {
-    if (props.secrets.length !== 4) {
+export default function Printer({ secrets, period, digits }: { secrets: string[]; period: number; digits: number }) {
+    if (secrets.length !== 4) {
         throw new Error("Printer component requires exactly 4 secrets.");
     }
 
     const totps = Array.from({ length: 4 }, (_, index) =>
         new OTPAuth.TOTP({
-            digits: props.digits,
-            period: props.period,
-            secret: OTPAuth.Secret.fromBase32(props.secrets[index]),
+            digits: digits,
+            period: period,
+            secret: OTPAuth.Secret.fromBase32(secrets[index]),
         })
     );
 

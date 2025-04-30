@@ -1,10 +1,11 @@
-// By Yiyun Sun
+// By Yiyun Sun, Junhui Huang
 //Styled by Kanghuan Xu
 "use client";
 
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button,
   MenuItem,
   Paper,
   Select,
@@ -19,6 +20,7 @@ import {
 import { fetchStudentList, fetchAttendanceData } from "./sqlAction";
 import student from "@/types/student";
 import { studentAttendance } from "@/types/studentAttendance";
+import PieChartIcon from '@mui/icons-material/PieChart';
 
 export default function ClassAttendancePage() {
   const [chosenStudentId, setChosenStudentId] = useState<number>(0);
@@ -104,6 +106,12 @@ export default function ClassAttendancePage() {
           </MenuItem>
         ))}
       </Select>
+
+      {students && chosenStudentId !== 0 && (
+        <Button variant="contained" startIcon={<PieChartIcon />} sx={{ mt: 2, mb: 2 }} onClick={() => {
+          window.open(`/attendances/${chosenStudentId}`, "_blank")
+        }} fullWidth>View Attendance Report</Button>
+      )}
 
       <Typography
         sx={{

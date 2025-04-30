@@ -16,9 +16,9 @@ export default function Barcode({
   isQR = false,
 }: BarcodeProps) {
   const svgString = toSVG({
-    bcid:   isQR ? "qrcode" : "datamatrix",
-    text:   data,
-    scale:  3,
+    bcid: isQR ? "qrcode" : "datamatrix",
+    text: data,
+    scale: 3,
     rotate: (["R", "I", "N", "L"] as const)[rotate],
   });
 
