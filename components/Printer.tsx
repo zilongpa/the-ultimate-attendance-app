@@ -10,7 +10,7 @@ export default function Printer(props: { secrets: string[], period: number, digi
         throw new Error("Printer component requires exactly 4 secrets.");
     }
 
-    const totps = Array(4).fill(null).map((index) =>
+    const totps = Array.from({ length: 4 }, (_, index) =>
         new OTPAuth.TOTP({
             digits: props.digits,
             period: props.period,
@@ -35,9 +35,6 @@ export default function Printer(props: { secrets: string[], period: number, digi
 
         return () => intervals.forEach(interval => clearInterval(interval));
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-    alert(props.secrets.join(", "));
 
     return (
         <motion.div
