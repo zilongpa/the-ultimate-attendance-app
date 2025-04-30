@@ -67,8 +67,6 @@ export default function Scan() {
       }
     }
 
-    console.log("Filtered data:", filteredData);
-
     if (Object.keys(filteredData).length < 3) {
       return "Not enough valid data after filtering. Need at least 3 intervals with 50% of the valid pixels.";
     }
@@ -103,8 +101,6 @@ export default function Scan() {
         delete validatedData[Number(key)];
       }
     }
-
-    console.log(validatedData);
 
     if (Object.keys(validatedData).length < 3) {
       return "Not enough valid data after validation. Need at least 3 intervals with 50% of the valid pixels.";
