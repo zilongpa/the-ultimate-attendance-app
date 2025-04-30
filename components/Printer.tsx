@@ -14,7 +14,7 @@ export default function Printer(props: { secrets: string[], period: number, digi
         new OTPAuth.TOTP({
             digits: props.digits,
             period: props.period,
-            secret: props.secrets[index],
+            secret: OTPAuth.Secret.fromBase32(props.secrets[index]),
         })
     );
 

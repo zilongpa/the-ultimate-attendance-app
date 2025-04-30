@@ -41,7 +41,7 @@ export default function Scan() {
       new OTPAuth.TOTP({
         digits: digits,
         period: period,
-        secret: secrets[index],
+        secret: OTPAuth.Secret.fromBase32(secrets[index]),
       })
     );
 
