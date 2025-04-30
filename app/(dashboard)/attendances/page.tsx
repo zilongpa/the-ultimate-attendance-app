@@ -1,10 +1,9 @@
 // By Yiyun Sun, Junhui Huang
-//Styled by Kanghuan Xu
+// Styled by Kanghuan Xu
 "use client";
 
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Button,
   MenuItem,
   Paper,
