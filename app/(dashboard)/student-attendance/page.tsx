@@ -68,7 +68,7 @@ export default function ClassAttendancePage() {
           mb: 1,
         }}
       >
-        Class Attendance
+        Student Attendance
       </Typography>
 
       <Typography
