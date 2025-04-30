@@ -78,20 +78,19 @@ export default async function RootLayout({
         },
       ]
       : []),
-    // Additional navigation items exclusive to professors
+    // Additional navigation items exclusive to professors (currently empty)
     ...(role === "professor"
-      ? [
-        {
-          kind: 'divider' as const, // Divider for separating sections in the navigation menu
-        },
-        {
-          segment: 'user',
-          title: 'My Settings', // Page to manage user name and override role
-          icon: <ManageAccountsIcon />,
-          pattern: 'user',
-        },
-      ]
+      ? []
       : []),
+    {
+      kind: 'divider' as const, // Divider for separating sections in the navigation menu
+    },
+    {
+      segment: 'user',
+      title: 'My Settings', // Page to manage user name and override role with environment variables
+      icon: <ManageAccountsIcon />,
+      pattern: 'user',
+    },
   ];
 
   return (
