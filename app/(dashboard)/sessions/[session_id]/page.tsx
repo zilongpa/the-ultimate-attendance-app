@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import StaticAttendanceTable from "./StaticAttendanceTable";
 import { redirect } from "next/navigation";
 import { PageContainer } from "@toolpad/core/PageContainer";
+// import SessionAttendanceReport from "@/components/SessionAttendanceReport copy";
 
 
 export default async function GetSessionAttendance({
