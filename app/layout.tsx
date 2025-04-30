@@ -52,12 +52,12 @@ export default async function RootLayout({
       icon: <TransferWithinAStationIcon />,
       pattern: "attendance",
     },
-    {
-      kind: 'divider' as const, // Divider for separating sections in the navigation menu
-    },
     // Additional navigation items for assistants and professors
     ...(role === "assistant" || role === "professor"
       ? [
+        {
+          kind: 'divider' as const, // Divider for separating sections in the navigation menu
+        },
         {
           segment: "new-session",
           title: "Create Session", // Page to create a new session
@@ -78,12 +78,12 @@ export default async function RootLayout({
         },
       ]
       : []),
-    {
-      kind: 'divider' as const, // Divider for separating sections in the navigation menu
-    },
     // Additional navigation items exclusive to professors
     ...(role === "professor"
       ? [
+        {
+          kind: 'divider' as const, // Divider for separating sections in the navigation menu
+        },
         {
           segment: 'user',
           title: 'My Settings', // Page to manage user name and override role
