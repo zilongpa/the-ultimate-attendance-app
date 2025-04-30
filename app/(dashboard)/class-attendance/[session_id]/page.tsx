@@ -4,6 +4,7 @@ import { getSQL } from "@/db";
 import Printer from "@/components/Printer";
 import { Box } from "@mui/material";
 import StaticAttendanceTable from "./StaticAttendanceTable";
+import { redirect } from "next/navigation";
 
 
 
@@ -19,10 +20,9 @@ export default async function GetSessionAttendance({
     if (isNaN(thisSessionId)) {
         throw new Error("Invalid session ID provided.");
     }
-
     const sessionSecrets = await sql`SELECT secret1, secret2, secret3, secret4 FROM sessions WHERE id = ${thisSessionId};`;
     if (sessionSecrets.length === 0) {
-        throw new Error(`Session with ID ${thisSessionId} not found.`);
+        redirect("/class-attendance");
     }
     const secretsArray = Array.from({ length: 4 }, (_, i) => sessionSecrets[0][`secret${i + 1}`]);
 
