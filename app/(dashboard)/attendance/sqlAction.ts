@@ -5,12 +5,6 @@ import { studentAttendance } from "@/types/studentAttendance";
 
 import { getSQL } from "@/db";
 import student from "@/types/student";
-import { raw } from "@bwip-js/generic";
-
-export interface StudentAttendance {
-    id: number;
-    check_in_time: Date;
-}
 
 export default async function sqlAction(query: string) {
     const sql = getSQL();
@@ -18,7 +12,7 @@ export default async function sqlAction(query: string) {
     return await sql.query(query);
 }
 
-export async function fetchAttendanceData(student_id: number): Promise<StudentAttendance[]> {
+export async function fetchAttendanceData(student_id: number): Promise<studentAttendance[]> {
     const rawData = await sqlAction(
         `SELECT a.id, a.check_in_time FROM sessions s JOIN attendances a ON s.id = a.session_id WHERE a.student_id = ${student_id}`
     );

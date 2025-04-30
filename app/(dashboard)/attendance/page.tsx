@@ -2,7 +2,7 @@
 "use client";
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { fetchStudentInfo, fetchAttendanceData } from './sqlAction';
-import { Box, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import student from '@/types/student';
@@ -33,7 +33,7 @@ export default function Attendence() {
     };
 
     fetchData();
-  }, [])
+  }, [email]);
 
   return (
     <PageContainer>
