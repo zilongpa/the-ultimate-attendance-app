@@ -23,14 +23,7 @@ export default function ClassAttendancePage() {
   }, []);
 
   return (
-    <PageContainer
-      sx={{
-        width: "100%",
-        maxWidth: 800,
-        mx: "auto", 
-        p: 4,     
-      }}
-    >
+    <PageContainer>
       <Typography
         sx={{
           fontSize: "2rem",

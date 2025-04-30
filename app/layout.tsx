@@ -52,6 +52,9 @@ export default async function RootLayout({
       icon: <TransferWithinAStationIcon />,
       pattern: "attendance",
     },
+    {
+      kind: 'divider' as const, // Divider for separating sections in the navigation menu
+    },
     // Additional navigation items for assistants and professors
     ...(role === "assistant" || role === "professor"
       ? [
@@ -82,10 +85,10 @@ export default async function RootLayout({
     ...(role === "professor"
       ? [
         {
-          segment: 'users',
-          title: 'Users', // Page to manage users
+          segment: 'user',
+          title: 'My Settings', // Page to manage user name and override role
           icon: <ManageAccountsIcon />,
-          pattern: 'users{/:userId}*',
+          pattern: 'user',
         },
       ]
       : []),

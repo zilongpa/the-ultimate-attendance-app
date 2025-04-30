@@ -21,6 +21,7 @@ import { fetchStudentList, fetchAttendanceData } from "./sqlAction";
 import student from "@/types/student";
 import { studentAttendance } from "@/types/studentAttendance";
 import PieChartIcon from '@mui/icons-material/PieChart';
+import { PageContainer } from "@toolpad/core/PageContainer";
 
 export default function ClassAttendancePage() {
   const [chosenStudentId, setChosenStudentId] = useState<number>(0);
@@ -54,14 +55,7 @@ export default function ClassAttendancePage() {
   }, [chosenStudentId]);
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 800,
-        mx: "auto",   
-        p: 4,      
-      }}
-    >
+    <PageContainer>
       <Typography
         sx={{
           fontSize: "2rem",
@@ -150,6 +144,6 @@ export default function ClassAttendancePage() {
           </TableBody>
         </Table>
       </TableContainer>
-    </Box>
+    </PageContainer>
   );
 }

@@ -1,4 +1,6 @@
 // By Junhui Huang
+// Originally created for Toolpad CRUD operations. Although it wasn't successfully integrated with Toolpad, 
+// this module now serves as a library of server-side actions for managing user-related operations.
 'use server';
 import { getSQL } from "@/db";
 import { User } from "./types";
