@@ -1,5 +1,5 @@
 // By Junhui Huang
-// Schema by Yiyun Sun
+// Schema by Junhui Huang, Yiyun Sun
 const schema = `
 DO $$
 BEGIN
@@ -95,6 +95,8 @@ export function getPool(): Pool {
         pool = new Pool({
             connectionString: process.env.DATABASE_URL,
         });
+        // Try to initialize the database every time getPool() is called.
+        // getPool() is only used for login, so this won't run extremely frequently.
         pool.query(schema).catch(err => {
             console.error('Error initializing database schema:', err);
         });

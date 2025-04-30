@@ -1,4 +1,4 @@
-// By Junhui Huang, Yiyun Sun
+// By Junhui Huang
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import type { Provider } from "next-auth/providers";

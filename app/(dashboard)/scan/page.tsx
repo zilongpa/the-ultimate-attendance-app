@@ -13,6 +13,7 @@ export default function Scan() {
     const digits = process.env.TOTP_DIGITS ? Number(process.env.TOTP_DIGITS) : 8;
     const session = await auth();
 
+    // Fetch the latest session ID
     const sessionQueryResult = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
     if (sessionQueryResult.length === 0) {
       return "No session ID found.";
@@ -20,6 +21,7 @@ export default function Scan() {
 
     const classSessionId = sessionQueryResult[0].id;
 
+    // Fetch the secrets associated with the session
     const secretsQueryResult = await sql`SELECT secret1, secret2, secret3, secret4 FROM sessions WHERE id = ${classSessionId};`;
     if (secretsQueryResult.length === 0) {
       return "No secrets found for the session.";
@@ -37,6 +39,7 @@ export default function Scan() {
       return "Invalid number of secrets found for the session.";
     }
 
+    // Initialize TOTP instances for each secret
     const totps = Array.from({ length: 4 }, (_, index) =>
       new OTPAuth.TOTP({
         digits: digits,
@@ -45,13 +48,14 @@ export default function Scan() {
       })
     );
 
+    // Ensure at least 4 intervals of data are provided
     if (Object.keys(data).length < 4) {
       return "Not enough data provided, need at least 4 intervals.";
     }
 
+    // Filter out duplicate values and ensure at least 2 unique values per interval
     const filteredData: Record<number, string[]> = {};
     const seenStrings = new Set<string>();
-
 
     for (const [key, values] of Object.entries(data)) {
       const uniqueValues = values.filter((value) => {
@@ -67,10 +71,12 @@ export default function Scan() {
       }
     }
 
+    // Ensure at least 3 intervals with valid data after filtering
     if (Object.keys(filteredData).length < 3) {
       return "Not enough valid data after filtering. Need at least 3 intervals with 50% of the valid pixels.";
     }
 
+    // Validate the filtered data against the TOTP instances
     const validatedData: Record<number, string[]> = {};
     for (const [key, values] of Object.entries(filteredData)) {
       const timestamp = Number(key);
@@ -81,7 +87,6 @@ export default function Scan() {
         for (const totp of totps) {
           try {
             const validation = totp.validate({ token: value, timestamp: timestamp });
-            // console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${validation}, ${totp.generate({ timestamp: timestamp })}`);
             if (validation !== null) {
               isValid = true;
               break;
@@ -96,16 +101,19 @@ export default function Scan() {
       }
     }
 
+    // Remove intervals with no valid data
     for (const key of Object.keys(validatedData)) {
       if (validatedData[Number(key)].length === 0) {
         delete validatedData[Number(key)];
       }
     }
 
+    // Ensure at least 3 intervals with valid data after validation
     if (Object.keys(validatedData).length < 3) {
       return "Not enough valid data after validation. Need at least 3 intervals with 50% of the valid pixels.";
     }
 
+    // Check for at least 3 consecutive intervals within the allowed time period
     const timestamps = Object.keys(validatedData).map(Number).sort((a, b) => a - b);
     let consecutiveCount = 1;
 
@@ -120,20 +128,19 @@ export default function Scan() {
       }
     }
 
-
     if (consecutiveCount < 3) {
       return "Not enough consecutive intervals. Need at least 3 consecutive intervals.";
     }
 
     const thisUserId = session?.user.id;
 
-    // Check if the user already exists in the attendance table
+    // Check if the user is already marked as present in the attendance table
     const existingAttendance = await sql`SELECT id FROM attendances WHERE session_id = ${classSessionId} AND student_id = ${thisUserId};`;
     if (existingAttendance.length > 0) {
       return "You are already in.";
     }
 
-    // Insert into attendance table
+    // Insert a new attendance record for the user
     const attendance = await sql`INSERT INTO attendances (session_id, student_id, check_in_time) VALUES (${classSessionId}, ${thisUserId}, ${new Date().toISOString()}) RETURNING id;`;
     if (attendance.length === 0) {
       return "Failed to insert attendance record.";
