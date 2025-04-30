@@ -1,5 +1,4 @@
-// By Junhui Huang
-// By Yiyun Sun
+// By Junhui Huang, Yiyun Sun
 import Scanner from "@/components/Scanner";
 import * as OTPAuth from "otpauth";
 import { getSQL } from "@/db";
@@ -24,7 +23,8 @@ export default function Scan() {
     if (secretsQueryResult.length === 0) {
       return "No secrets found for the session.";
     }
-    console.log(secretsQueryResult[0]);
+
+    console.log(data);
 
     let secrets = null;
     try {
@@ -70,8 +70,8 @@ export default function Scan() {
         let isValid = false;
         for (const totp of totps) {
           try {
-            console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${totp.validate({ token: value, timestamp: timestamp * 1000 * period }) }`);
-            if (totp.validate({ token: value, timestamp: timestamp * 1000 * period }) !== null) {
+            console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${totp.validate({ token: value, timestamp: timestamp })}`);
+            if (totp.validate({ token: value, timestamp: timestamp }) !== null) {
               isValid = true;
               break;
             }
@@ -99,7 +99,7 @@ export default function Scan() {
     let consecutiveCount = 1;
 
     for (let i = 1; i < timestamps.length; i++) {
-      if (timestamps[i] === timestamps[i - 1] + 1) {
+      if (timestamps[i] - timestamps[i - 1] <= period * 1000) {
         consecutiveCount++;
         if (consecutiveCount === 4) {
           break;
@@ -108,7 +108,7 @@ export default function Scan() {
         consecutiveCount = 1;
       }
     }
-    
+
 
     if (consecutiveCount < 4) {
       return "Not enough consecutive intervals. Need at least 4 consecutive intervals.";

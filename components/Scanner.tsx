@@ -33,9 +33,9 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
             timeoutId = null;
         }
 
+        const counter = Date.now();
         detectedCodes.forEach(detectedCode => {
             const value = detectedCode.rawValue;
-            const counter = Math.floor(Math.floor(Date.now() / 1000) / period);
             if (!data[counter]) {
                 data[counter] = [];
             }
