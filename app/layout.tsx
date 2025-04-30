@@ -11,7 +11,6 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import BallotIcon from '@mui/icons-material/Ballot';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
-import HomeIcon from '@mui/icons-material/Home';
 import { NotificationsProvider } from '@toolpad/core/useNotifications';
 
 const BRANDING = {
