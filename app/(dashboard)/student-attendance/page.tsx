@@ -4,23 +4,14 @@
 import { Box, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { fetchStudentList, fetchAttendanceData } from "./sqlAction";
-
-interface Student {
-    id: number;
-    name: string;
-    email: string;
-}
-
-interface StudentAttendance {
-    id: number;
-    check_in_time: Date;
-}
+import student from "@/types/student";
+import { studentAttendance } from "@/types/studentAttendance";
 
 export default function ClassAttendancePage() {
 
     const [chosenStudentId, setChosenStudentId] = useState<number>(0);
-    const [students, setStudents] = useState<Student[]>([]);
-    const [attendanceData, setAttendanceData] = useState<StudentAttendance[]>([]);
+    const [students, setStudents] = useState<student[]>([]);
+    const [attendanceData, setAttendanceData] = useState<studentAttendance[]>([]);
 
     useEffect(() => {
         // Fetch students

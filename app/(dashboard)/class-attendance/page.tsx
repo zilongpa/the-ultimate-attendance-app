@@ -5,16 +5,14 @@ import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchData } from "./sqlAction";
+import session from "@/types/session";
 
-interface Session {
-    id: number;
-    start_time: Date;
-}
+
 
 export default function ClassAttendancePage() {
 
     const [chosenSession, setChosenSession] = useState<number>(0);
-    const [sessions, setSessions] = useState<Session[]>([]);
+    const [sessions, setSessions] = useState<session[]>([]);
 
     useEffect(() => {
         const fetchSessions = async () => {
