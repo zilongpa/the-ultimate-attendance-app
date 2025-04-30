@@ -1,20 +1,16 @@
 // By Yiyun Sun
-// import { DataSourceCache } from "@toolpad/core";
 import { getSQL } from "@/db";
 import Printer from "@/components/Printer";
 import { Box } from "@mui/material";
 import StaticAttendanceTable from "./StaticAttendanceTable";
 import { redirect } from "next/navigation";
 import { PageContainer } from "@toolpad/core/PageContainer";
-// import SessionAttendanceReport from "@/components/SessionAttendanceReport copy";
-
 
 export default async function GetSessionAttendance({
     params,
 }: {
     params: Promise<{ session_id: string }>;
 }) {
-    // const attendanceCache = new DataSourceCache();
     const sql = getSQL();
     const { session_id } = await params;
     const thisSessionId = Number(session_id);
@@ -34,12 +30,11 @@ export default async function GetSessionAttendance({
                     width: "30vw",
                     marginLeft: "auto",
                     marginRight: "auto",
+                    mb: 3,
                 }}
             >
                 <Printer secrets={secretsArray} period={2} digits={8} />
             </Box>
-
-            {/* <GetAttendanceCurd session_id={thisSessionId} sqlAction={sqlAction} /> */}
             <StaticAttendanceTable session_id={thisSessionId} />
         </PageContainer>
     )

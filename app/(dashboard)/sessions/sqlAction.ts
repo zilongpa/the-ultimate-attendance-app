@@ -1,7 +1,8 @@
-// By Yiyun Sun
+// By Yiyun Sun, Junhui Huang
 "use server";
 
 import { getSQL } from "@/db";
+import { formatSessionName } from "@/utils";
 
 export default async function sqlAction(query: string) {
     const sql = getSQL();
@@ -9,13 +10,15 @@ export default async function sqlAction(query: string) {
     return await sql.query(query);
 }
 
-export async function fetchData(): Promise<{ id: number, start_time: Date }[]> {
+export async function fetchData(): Promise<{ id: number, name: string }[]> {
     const rawData = await sqlAction(
-        `SELECT id, start_time FROM sessions`
+        `SELECT id, name, type, start_time FROM sessions ORDER BY start_time DESC;`
     );
-    const data: { id: number, start_time: Date }[] = rawData.map(record => ({
+    
+    const data: { id: number, name: string }[] = rawData.map(record => ({
         id: record.id,
-        start_time: new Date(record.start_time),
+        name: record.name || formatSessionName(record.type, record.start_time),
     }));
+    
     return data;
 };

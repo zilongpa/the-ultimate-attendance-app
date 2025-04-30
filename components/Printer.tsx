@@ -81,6 +81,7 @@ export default function Printer({
                 backgroundColor: "white",
                 padding: "1em",
                 borderRadius: "0.5em",
+                paddingBottom: "calc(1em + 3%)",
             }}
         >
             {barcodeData.map((data, index) => (

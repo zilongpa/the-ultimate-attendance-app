@@ -50,14 +50,18 @@ export default async function newSession() {
 
                 return redirect(`/sessions/${sessionID}`);
             }}>
-                <InputLabel htmlFor="session-name" sx={{ textAlign: 'center' }}>Custom Session Name</InputLabel>
+
+                
+                <InputLabel htmlFor="session-name" sx={{ textAlign: 'center' }}>Session Name</InputLabel>
                 <TextField
                     id="session-name"
                     name="name"
                     variant="outlined"
+                    placeholder="Leave blank for default name"
                     fullWidth
                     sx={{ display: 'block', marginBottom: 2, width: '50%', marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}
                 />
+
 
                 <InputLabel htmlFor="type-select" sx={{ textAlign: 'center' }}>Select a session type:</InputLabel>
                 <Select
@@ -77,6 +81,7 @@ export default async function newSession() {
                         </MenuItem>
                     ))}
                 </Select>
+                
 
                 <InputLabel htmlFor="duration-input" sx={{ textAlign: 'center' }}>Session Duration (minutes):</InputLabel>
                 <TextField
@@ -87,6 +92,9 @@ export default async function newSession() {
                     sx={{ display: 'block', marginBottom: 2, width: '50%', marginLeft: 'auto', marginRight: 'auto', textAlign: 'center' }}
                     required
                 />
+
+                
+
 
                 <Button
                     type="submit"
