@@ -5,7 +5,7 @@ import Printer from "@/components/Printer";
 import { Box } from "@mui/material";
 import StaticAttendanceTable from "./StaticAttendanceTable";
 import { redirect } from "next/navigation";
-
+import { PageContainer } from "@toolpad/core/PageContainer";
 
 
 export default async function GetSessionAttendance({
@@ -22,12 +22,12 @@ export default async function GetSessionAttendance({
     }
     const sessionSecrets = await sql`SELECT secret1, secret2, secret3, secret4 FROM sessions WHERE id = ${thisSessionId};`;
     if (sessionSecrets.length === 0) {
-        redirect("/class-attendance");
+        redirect("/sessions");
     }
     const secretsArray = Array.from({ length: 4 }, (_, i) => sessionSecrets[0][`secret${i + 1}`]);
 
     return (
-        <>
+        <PageContainer>
             <Box
                 sx={{
                     width: "30vw",
@@ -40,7 +40,7 @@ export default async function GetSessionAttendance({
 
             {/* <GetAttendanceCurd session_id={thisSessionId} sqlAction={sqlAction} /> */}
             <StaticAttendanceTable session_id={thisSessionId} />
-        </>
+        </PageContainer>
     )
 
 }

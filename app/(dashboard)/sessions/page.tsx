@@ -1,13 +1,12 @@
 // By Yiyun Sun
 "use client";
 
-import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
+import { Button, MenuItem, Select, Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { fetchData } from "./sqlAction";
 import session from "@/types/session";
-
-
+import { PageContainer } from "@toolpad/core/PageContainer";
 
 export default function ClassAttendancePage() {
 
@@ -24,7 +23,7 @@ export default function ClassAttendancePage() {
     }, []);
 
     return (
-        <Box>
+        <PageContainer>
             <Typography>Class Attendance</Typography>
             <Typography>Please select a past session.</Typography>
             <Select
@@ -40,7 +39,7 @@ export default function ClassAttendancePage() {
                 onSubmit={() => {
                     // Handle form submission here
                     console.log("Selected session:", chosenSession);
-                    redirect(`/class-attendance/${chosenSession}`);
+                    redirect(`/sessions/${chosenSession}`);
                 }}
             >
                 <MenuItem value={0} disabled>
@@ -57,13 +56,13 @@ export default function ClassAttendancePage() {
                 onClick={() => {
                     // Handle form submission here
                     console.log("Selected session:", chosenSession);
-                    redirect(`/class-attendance/${chosenSession}`);
+                    redirect(`/sessions/${chosenSession}`);
                 }}
                 sx={{
                     marginTop: 2,
                 }}
 
             > Submit </Button>
-        </Box>
+        </PageContainer>
     );
 }   

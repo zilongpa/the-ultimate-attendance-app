@@ -1,6 +1,7 @@
 {
   "name": "the-ultimate-attendance-app",
   "version": "0.1.0",
+  "author": "Junhui Huang & Kanghuan Xu & Yiyun Sun @ Boston University",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -17,6 +18,7 @@
     "@mui/icons-material": "^7.0.1",
     "@mui/material": "^7.0.1",
     "@mui/material-nextjs": "^7.0.2",
+    "@mui/x-charts": "^8.0.0-beta.3",
     "@neondatabase/serverless": "^1.0.0",
     "@toolpad/core": "^0.14.0",
     "@yudiel/react-qr-scanner": "^2.2.2-beta.2",

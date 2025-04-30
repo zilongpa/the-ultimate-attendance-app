@@ -34,12 +34,6 @@ export default async function RootLayout({
   const role = session?.user?.role;
   const NAVIGATION: Navigation = [
     {
-      segment: "",
-      title: "Home",
-      icon: <HomeIcon />,
-      pattern: "/",
-    },
-    {
       segment: "scan",
       title: "Check In",
       icon: <HowToVoteIcon />,
@@ -60,10 +54,10 @@ export default async function RootLayout({
           pattern: "/new-session",
         },
         {
-          segment: "class-attendance",
+          segment: "sessions",
           title: "Class Attendance",
           icon: <BallotIcon />,
-          pattern: "/class-attendance",
+          pattern: "/sessions{/:sessionId}?",
         },
         {
           segment: "student-attendance",
