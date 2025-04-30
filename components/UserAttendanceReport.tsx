@@ -16,6 +16,7 @@ export default async function UserAttendanceReport({ id }: { id?: number }) {
         return <Typography variant="h6">You do not have permission to view this report.</Typography>;
     }
     const { name, email } = info[0];
+    const subject = session?.user.id === id ? "You" : name;
     const overall = (await sql`SELECT
         s.type AS session_type,
         COUNT(*) AS total_sessions,
@@ -86,10 +87,10 @@ export default async function UserAttendanceReport({ id }: { id?: number }) {
                         />
                         <Typography variant="body1" sx={{ marginTop: 2 }}>
                             {overall.reduce((sum, item) => sum + parseInt(item.attended_sessions), 0) === overall.reduce((sum, item) => sum + parseInt(item.total_sessions), 0)
-                                ? "You attended all sessions."
+                                ? `${subject} attended all sessions.`
                                 : overall.reduce((sum, item) => sum + parseInt(item.attended_sessions), 0) === 0
-                                    ? "You never attended any sessions."
-                                    : `You attended ${overall.reduce((sum, item) => sum + parseInt(item.attended_sessions), 0)} out of ${overall.reduce((sum, item) => sum + parseInt(item.total_sessions), 0)} sessions, which is about ${((overall.reduce((sum, item) => sum + parseInt(item.attended_sessions), 0) / overall.reduce((sum, item) => sum + parseInt(item.total_sessions), 0)) * 100).toFixed(2)}% of the total.`}
+                                    ? `${subject} never attended any sessions.`
+                                    : `${subject} attended ${overall.reduce((sum, item) => sum + parseInt(item.attended_sessions), 0)} out of ${overall.reduce((sum, item) => sum + parseInt(item.total_sessions), 0)} sessions, which is about ${((overall.reduce((sum, item) => sum + parseInt(item.attended_sessions), 0) / overall.reduce((sum, item) => sum + parseInt(item.total_sessions), 0)) * 100).toFixed(2)}% of the total.`}
                         </Typography>
                     </Box>
                     {overall.map((item, index) => {
@@ -138,10 +139,10 @@ export default async function UserAttendanceReport({ id }: { id?: number }) {
                                 />
                                 <Typography variant="body1" sx={{ marginTop: 2 }}>
                                     {parseInt(item.attended_sessions) === parseInt(item.total_sessions)
-                                        ? `You attended all ${item.total_sessions} ${item.session_type} sessions (${item.attended_sessions} attended).`
+                                        ? `${subject} attended all ${item.total_sessions} ${item.session_type} sessions (${item.attended_sessions} attended).`
                                         : parseInt(item.attended_sessions) === 0
-                                            ? `You never attended any ${item.session_type} sessions (${item.total_sessions} total).`
-                                            : `You attended ${item.attended_sessions} out of ${item.total_sessions} ${item.session_type} session${parseInt(item.total_sessions) > 1 ? "s" : ""} (${((parseInt(item.attended_sessions) / parseInt(item.total_sessions)) * 100).toFixed(2)}%).`}
+                                            ? `${subject} never attended any ${item.session_type} sessions (${item.total_sessions} total).`
+                                            : `${subject} attended ${item.attended_sessions} out of ${item.total_sessions} ${item.session_type} session${parseInt(item.total_sessions) > 1 ? "s" : ""} (${((parseInt(item.attended_sessions) / parseInt(item.total_sessions)) * 100).toFixed(2)}%).`}
                                 </Typography>
                             </Box>
                         );
