@@ -37,7 +37,7 @@ export default function Scan() {
       return "Invalid number of secrets found for the session.";
     }
 
-    const totps = Array(4).fill(null).map((index) =>
+    const totps = Array.from({ length: 4 }, (_, index) =>
       new OTPAuth.TOTP({
         digits: digits,
         period: period,
@@ -51,6 +51,7 @@ export default function Scan() {
 
     const filteredData: Record<number, string[]> = {};
     const seenStrings = new Set<string>();
+
 
     for (const [key, values] of Object.entries(data)) {
       const uniqueValues = values.filter((value) => {
@@ -66,8 +67,10 @@ export default function Scan() {
       }
     }
 
-    if (Object.keys(filteredData).length < 4) {
-      return "Not enough valid data after filtering. Need at least 4 intervals with 50% of the valid pixels.";
+    console.log("Filtered data:", filteredData);
+
+    if (Object.keys(filteredData).length < 3) {
+      return "Not enough valid data after filtering. Need at least 3 intervals with 50% of the valid pixels.";
     }
 
     const validatedData: Record<number, string[]> = {};
@@ -79,8 +82,8 @@ export default function Scan() {
         let isValid = false;
         for (const totp of totps) {
           try {
-            const validation = totp.validate({ token: value, timestamp: timestamp, window: 10 });
-            console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${validation}, ${totp.generate({ timestamp: timestamp })}`);
+            const validation = totp.validate({ token: value, timestamp: timestamp });
+            // console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${validation}, ${totp.generate({ timestamp: timestamp })}`);
             if (validation !== null) {
               isValid = true;
               break;
@@ -103,15 +106,15 @@ export default function Scan() {
 
     console.log(validatedData);
 
-    if (Object.keys(validatedData).length < 4) {
-      return "Not enough valid data after validation. Need at least 4 intervals with 50% of the valid pixels.";
+    if (Object.keys(validatedData).length < 3) {
+      return "Not enough valid data after validation. Need at least 3 intervals with 50% of the valid pixels.";
     }
 
     const timestamps = Object.keys(validatedData).map(Number).sort((a, b) => a - b);
     let consecutiveCount = 1;
 
     for (let i = 1; i < timestamps.length; i++) {
-      if (timestamps[i] - timestamps[i - 1] <= period * 1000) {
+      if (timestamps[i] - timestamps[i - 1] <= period * 1000 * 2) {
         consecutiveCount++;
         if (consecutiveCount === 4) {
           break;
@@ -122,8 +125,8 @@ export default function Scan() {
     }
 
 
-    if (consecutiveCount < 4) {
-      return "Not enough consecutive intervals. Need at least 4 consecutive intervals.";
+    if (consecutiveCount < 3) {
+      return "Not enough consecutive intervals. Need at least 3 consecutive intervals.";
     }
 
     const thisUserId = session?.user.id;
