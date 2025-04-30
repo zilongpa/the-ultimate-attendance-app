@@ -1,5 +1,4 @@
 // Style by Kanghuan Xu
-
 "use client";
 
 import { toSVG } from "@bwip-js/generic";

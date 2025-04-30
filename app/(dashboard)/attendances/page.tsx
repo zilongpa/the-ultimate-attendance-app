@@ -58,8 +58,8 @@ export default function ClassAttendancePage() {
       sx={{
         width: "100%",
         maxWidth: 800,
-        mx: "auto",   // horizontal center
-        p: 4,         // padding
+        mx: "auto",   
+        p: 4,      
       }}
     >
       <Typography
@@ -93,7 +93,7 @@ export default function ClassAttendancePage() {
         sx={{
           display: "block",
           width: 300,
-          mx: "auto",  // center dropdown
+          mx: "auto",
           mb: 3,
         }}
       >
