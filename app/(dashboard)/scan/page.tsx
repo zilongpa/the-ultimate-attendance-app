@@ -5,10 +5,11 @@ import { getSQL } from "@/db";
 import { auth } from "@/auth";
 
 export default function Scan() {
+  const period = process.env.TOTP_PERIOD ? Number(process.env.TOTP_PERIOD) : 2;
+
   async function validate(data: Record<number, string[]>): Promise<string | null> {
     "use server";
     const sql = getSQL();
-    const period = process.env.TOTP_PERIOD ? Number(process.env.TOTP_PERIOD) : 2;
     const digits = process.env.TOTP_DIGITS ? Number(process.env.TOTP_DIGITS) : 8;
     const session = await auth();
 
@@ -24,8 +25,6 @@ export default function Scan() {
       return "No secrets found for the session.";
     }
 
-    console.log(data);
-
     let secrets = null;
     try {
       secrets = [
@@ -40,7 +39,6 @@ export default function Scan() {
 
     const totps = Array(4).fill(null).map((index) =>
       new OTPAuth.TOTP({
-        algorithm: "SHA1",
         digits: digits,
         period: period,
         secret: secrets[index],
@@ -52,15 +50,26 @@ export default function Scan() {
     }
 
     const filteredData: Record<number, string[]> = {};
+    const seenStrings = new Set<string>();
+
     for (const [key, values] of Object.entries(data)) {
-      if (values.length >= 2) {
-        filteredData[Number(key)] = values;
+      const uniqueValues = values.filter((value) => {
+        if (seenStrings.has(value)) {
+          return false;
+        }
+        seenStrings.add(value);
+        return true;
+      });
+
+      if (uniqueValues.length >= 2) {
+        filteredData[Number(key)] = uniqueValues;
       }
     }
 
     if (Object.keys(filteredData).length < 4) {
       return "Not enough valid data after filtering. Need at least 4 intervals with 50% of the valid pixels.";
     }
+
     const validatedData: Record<number, string[]> = {};
     for (const [key, values] of Object.entries(filteredData)) {
       const timestamp = Number(key);
@@ -70,8 +79,9 @@ export default function Scan() {
         let isValid = false;
         for (const totp of totps) {
           try {
-            console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${totp.validate({ token: value, timestamp: timestamp })}`);
-            if (totp.validate({ token: value, timestamp: timestamp }) !== null) {
+            const validation = totp.validate({ token: value, timestamp: timestamp, window: 10 });
+            console.log(`Validating ${value} against ${totp.secret.base32} at timestamp ${timestamp}, ${validation}, ${totp.generate({ timestamp: timestamp })}`);
+            if (validation !== null) {
               isValid = true;
               break;
             }
@@ -90,6 +100,8 @@ export default function Scan() {
         delete validatedData[Number(key)];
       }
     }
+
+    console.log(validatedData);
 
     if (Object.keys(validatedData).length < 4) {
       return "Not enough valid data after validation. Need at least 4 intervals with 50% of the valid pixels.";
@@ -132,6 +144,6 @@ export default function Scan() {
   }
 
   return (
-    <Scanner submitAction={validate}/>
+    <Scanner submitAction={validate} period={period} />
   );
 }

@@ -8,7 +8,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-export default function Scanner({ submitAction }: { submitAction: (data: Record<number, string[]>) => Promise<string | null> }) {
+export default function Scanner({ submitAction, period }: { submitAction: (data: Record<number, string[]>) => Promise<string | null>, period: number }) {
     const devices = useDevices();
     let data: Record<number, string[]> = {};
     const [progress, setProgress] = useState(0);
@@ -33,30 +33,29 @@ export default function Scanner({ submitAction }: { submitAction: (data: Record<
             timeoutId = null;
         }
 
-        const counter = Date.now();
+        const timestamp = Date.now();
+        data[timestamp] = []
         detectedCodes.forEach(detectedCode => {
             const value = detectedCode.rawValue;
-            if (!data[counter]) {
-                data[counter] = [];
-            }
-            if (!data[counter].includes(value)) {
-                data[counter].push(value);
+            if (!data[timestamp].includes(value)) {
+                data[timestamp].push(value);
             }
         });
 
         const keys = Object.keys(data).map(Number).sort((a, b) => a - b);
         setDescription("Holding your device until the progress bar is full...");
-
         let consecutiveCount = 1;
         for (let i = 1; i < keys.length; i++) {
-            if (keys[i] === keys[i - 1] + 1 && consecutiveCount < 4) {
-                consecutiveCount++;
+            if (keys[i] - keys[i - 1] <= (1000 * period * 2) && consecutiveCount < 4) {
+            consecutiveCount++;
             } else {
-                break;
+            break;
             }
         }
         setProgress((consecutiveCount / 4) * 100);
         setProgressBuffer(old => Math.max(old, (consecutiveCount / 4) * 100));
+
+        console.log(data, keys, consecutiveCount, progress, progressBuffer);
 
         if (consecutiveCount >= 4) {
             setDescription("Validating... Please wait.");
@@ -77,7 +76,7 @@ export default function Scanner({ submitAction }: { submitAction: (data: Record<
                     setDescription("Scan timed out. Please try again.");
                     data = {};
                 }
-            }, 3000);
+            }, (period + 1) * 1000);
         }
     };
 

@@ -12,7 +12,6 @@ export default function Printer(props: { secrets: string[], period: number, digi
 
     const totps = Array(4).fill(null).map((index) =>
         new OTPAuth.TOTP({
-            algorithm: "SHA1",
             digits: props.digits,
             period: props.period,
             secret: props.secrets[index],
@@ -36,6 +35,9 @@ export default function Printer(props: { secrets: string[], period: number, digi
 
         return () => intervals.forEach(interval => clearInterval(interval));
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+
+    alert(props.secrets.join(", "));
 
     return (
         <motion.div
