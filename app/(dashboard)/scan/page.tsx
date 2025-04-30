@@ -132,6 +132,6 @@ export default function Scan() {
   }
 
   return (
-    <Scanner submitAction={validate} period={2} />
+    <Scanner submitAction={validate}/>
   );
 }

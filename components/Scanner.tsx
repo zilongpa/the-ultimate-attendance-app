@@ -8,7 +8,7 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-export default function Scanner({ submitAction, period }: { submitAction: (data: Record<number, string[]>) => Promise<string | null>, period: number }) {
+export default function Scanner({ submitAction }: { submitAction: (data: Record<number, string[]>) => Promise<string | null> }) {
     const devices = useDevices();
     let data: Record<number, string[]> = {};
     const [progress, setProgress] = useState(0);
