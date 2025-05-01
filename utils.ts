@@ -21,7 +21,7 @@ export function formatSessionName(session_type: string, start_time: string): str
         hour: "2-digit",
         minute: "2-digit",
         year: "numeric",
-        month: "narrow",
+        month: "long",
         day: "numeric",
     })}`;
 }
