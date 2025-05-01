@@ -56,18 +56,26 @@ export default function Scan() {
     // Filter out duplicate values and ensure at least 2 unique values per interval
     const filteredData: Record<number, string[]> = {};
     const seenStrings = new Set<string>();
+    const currentTime = Date.now();
 
     for (const [key, values] of Object.entries(data)) {
+      const timestamp = Number(key);
+
+      // Drop intervals that are too old
+      if (currentTime - timestamp > 8 * period * 1000) {
+      continue;
+      }
+
       const uniqueValues = values.filter((value) => {
-        if (seenStrings.has(value)) {
-          return false;
-        }
-        seenStrings.add(value);
-        return true;
+      if (seenStrings.has(value)) {
+        return false;
+      }
+      seenStrings.add(value);
+      return true;
       });
 
       if (uniqueValues.length >= 2) {
-        filteredData[Number(key)] = uniqueValues;
+      filteredData[timestamp] = uniqueValues;
       }
     }
 
