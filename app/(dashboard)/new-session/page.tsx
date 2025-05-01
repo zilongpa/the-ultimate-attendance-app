@@ -24,9 +24,7 @@ export default async function newSession() {
     const session = await auth();
 
     if (session?.user.role != "professor" && session?.user.role != "assistant") {
-        console.log(session?.user.role != "professor")
-        console.log(session?.user.role != "assistant");
-        // redirect("/");
+        redirect("/");
     }
 
     return (
