@@ -12,6 +12,7 @@ import {
 import { PageContainer } from "@toolpad/core/PageContainer";
 import { capitalizeFirstLetter } from "@/utils";
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -37,44 +38,78 @@ export default async function SettingsPage() {
     );
   }
 
-  // 3. Server action to update
+  // 3. Server action to update with validation and redirect (refresh)
   async function handleUpdate(formData: FormData) {
     "use server";
-    if (!user) throw new Error("User not found");
-    const updated = await updateOne(user.id.toString(), {
-      name: formData.get("name") as string,
-    });
-    if (!updated) throw new Error("Update failed");
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Validate incoming name
+    const rawName = formData.get("name");
+    const name = typeof rawName === "string" ? rawName.trim() : "";
+    if (!name) {
+      throw new Error("Username cannot be empty.");
+    }
+    if (name.length > 16) {
+      throw new Error("Username cannot exceed 16 characters.");
+    }
+
+    // Attempt update
+    const updated = await updateOne(user.id.toString(), { name });
+    if (!updated) {
+      throw new Error("Update failed.");
+    }
+
+    // Refresh the page to pick up updated data
+    redirect("/user");
   }
 
   // 4. Render form
   return (
     <PageContainer>
       <Box
-      component="form"
-      action={handleUpdate}
-      noValidate
-      sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        component="form"
+        action={handleUpdate}
+        noValidate
+        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
       >
-      <TextField
-        name="name"
-        label="Name"
-        defaultValue={dbUser.name}
-        fullWidth
-      />
-      <label>Your Email: {dbUser.email}</label>
-      <label>Your Role: {capitalizeFirstLetter(dbUser.role)}</label>
-      <br />
-      <Button type="submit" variant="contained">
-        Save Changes
-      </Button>
+        <Typography>Your current username: {dbUser.name}</Typography>
+        <Typography>Please enter your new username below</Typography>
+        <TextField name="name" label="Name" defaultValue="" fullWidth />
+        <Typography>Your Email: {dbUser.email}</Typography>
+        <label>Your Role: {capitalizeFirstLetter(dbUser.role)}</label>
+        <br />
+        <Button type="submit" variant="contained">
+          Save Changes
+        </Button>
       </Box>
-      {dbUser.role !== session?.user.role &&
-        <Box sx={{ border: "1px solid #ccc", mt: 4, p: 1, borderRadius: 1 }}>
-          <Typography color="red">{`Your role is currently overridden by the environment variable to ${(session?.user.role as string).toUpperCase()}, which is different from your current role in the database! There's nothing to worry about, but it might be a better idea to update your role in the database.`}</Typography>
-          <Button variant="contained" color="warning" sx={{ mt: 1 }} fullWidth disabled >{`Override your role with "${session?.user.role}" permanently (Unavailable)`}</Button>
-      </Box>
-      }
+
+      {dbUser.role !== session?.user.role && (
+        <Box
+          sx={{
+            border: "1px solid #ccc",
+            mt: 4,
+            p: 1,
+            borderRadius: 1,
+          }}
+        >
+          <Typography color="red">
+            {`Your role is currently overridden by the environment variable to "${(
+              session?.user.role as string
+            ).toUpperCase()}", which is different from your current role in the database! There's nothing to worry about, but it might be a better idea to update your role in the database.`}
+          </Typography>
+          <Button
+            variant="contained"
+            color="warning"
+            sx={{ mt: 1 }}
+            fullWidth
+            disabled
+          >
+            {`Override your role with "${session?.user.role}" permanently (Unavailable)`}
+          </Button>
+        </Box>
+      )}
     </PageContainer>
   );
 }
