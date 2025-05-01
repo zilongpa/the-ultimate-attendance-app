@@ -12,7 +12,6 @@ import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStati
 import BallotIcon from '@mui/icons-material/Ballot';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import { NotificationsProvider } from '@toolpad/core/useNotifications';
-import { Session } from 'inspector/promises';
 
 // Define branding information for the application
 const BRANDING = {
