@@ -5,12 +5,19 @@ import { Box } from "@mui/material";
 import StaticAttendanceTable from "./StaticAttendanceTable";
 import { redirect } from "next/navigation";
 import { PageContainer } from "@toolpad/core/PageContainer";
+import { auth } from "@/auth";
 
 export default async function GetSessionAttendance({
     params,
 }: {
     params: Promise<{ session_id: string }>;
 }) {
+
+    const session = await auth();
+    if (session?.user.role != "professor" && session?.user.role != "assistant") {
+        redirect("/");
+    }
+
     const sql = getSQL();
     const { session_id } = await params;
     const thisSessionId = Number(session_id);

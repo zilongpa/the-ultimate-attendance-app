@@ -21,8 +21,16 @@ import student from "@/types/student";
 import { studentAttendance } from "@/types/studentAttendance";
 import PieChartIcon from '@mui/icons-material/PieChart';
 import { PageContainer } from "@toolpad/core/PageContainer";
+import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function ClassAttendancePage() {
+
+  const session = useSession();
+  if (session?.data?.user.role != "professor" && session?.data?.user.role != "assistant") {
+    redirect("/");
+  }
+
   const [chosenStudentId, setChosenStudentId] = useState<number>(0);
   const [students, setStudents] = useState<student[]>([]);
   const [attendanceData, setAttendanceData] = useState<studentAttendance[]>(

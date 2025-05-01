@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import * as OTPAuth from "otpauth";
 import { PageContainer } from "@toolpad/core/PageContainer";
+import { auth } from "@/auth";
 
 const sessionTypes: string[] = ['lecture', 'lab', 'discussion']
 
@@ -20,6 +21,14 @@ function formatDateForSQL(date: Date): string {
 }
 
 export default async function newSession() {
+    const session = await auth();
+
+    if (session?.user.role != "professor" && session?.user.role != "assistant") {
+        console.log(session?.user.role != "professor")
+        console.log(session?.user.role != "assistant");
+        // redirect("/");
+    }
+
     return (
         <PageContainer>
             <form action={async (formData: FormData) => {
@@ -51,7 +60,7 @@ export default async function newSession() {
                 return redirect(`/sessions/${sessionID}`);
             }}>
 
-                
+
                 <InputLabel htmlFor="session-name" sx={{ textAlign: 'center' }}>Session Name</InputLabel>
                 <TextField
                     id="session-name"
@@ -81,7 +90,7 @@ export default async function newSession() {
                         </MenuItem>
                     ))}
                 </Select>
-                
+
 
                 <InputLabel htmlFor="duration-input" sx={{ textAlign: 'center' }}>Session Duration (minutes):</InputLabel>
                 <TextField
@@ -93,7 +102,7 @@ export default async function newSession() {
                     required
                 />
 
-                
+
 
 
                 <Button
