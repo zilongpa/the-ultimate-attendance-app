@@ -5,13 +5,14 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Suspense } from 'react';
 import { Navigation } from '@toolpad/core/AppProvider';
 import { auth } from '@/auth';
-import { signIn, signOut } from 'next-auth/react';
+import { SessionProvider, signIn, signOut } from 'next-auth/react';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import BallotIcon from '@mui/icons-material/Ballot';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import { NotificationsProvider } from '@toolpad/core/useNotifications';
+import { Session } from 'inspector/promises';
 
 // Define branding information for the application
 const BRANDING = {
@@ -101,20 +102,22 @@ export default async function RootLayout({
       </head>
       <body>
         {/* Wrap the application with necessary providers */}
-        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <Suspense fallback={<LinearProgress />}> {/* Show a loading indicator while content is loading */}
-            <NotificationsProvider>
-              <NextAppProvider
-                navigation={NAVIGATION} // Pass navigation configuration
-                branding={BRANDING} // Pass branding configuration
-                session={session} // Pass user session
-                authentication={AUTHENTICATION} // Pass authentication methods
-              >
-                {children}
-              </NextAppProvider>
-            </NotificationsProvider>
-          </Suspense>
-        </AppRouterCacheProvider>
+        <SessionProvider session={session}>
+          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+            <Suspense fallback={<LinearProgress />}> {/* Show a loading indicator while content is loading */}
+              <NotificationsProvider>
+                <NextAppProvider
+                  navigation={NAVIGATION} // Pass navigation configuration
+                  branding={BRANDING} // Pass branding configuration
+                  session={session} // Pass user session
+                  authentication={AUTHENTICATION} // Pass authentication methods
+                >
+                  {children}
+                </NextAppProvider>
+              </NotificationsProvider>
+            </Suspense>
+          </AppRouterCacheProvider>
+        </SessionProvider>
       </body>
     </html>
   );
