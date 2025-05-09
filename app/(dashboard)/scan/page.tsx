@@ -16,25 +16,29 @@ export default function Scan() {
     const newData: Record<number, string[]> = {};
     let sessionValue: string | null = null;
 
+    console.log(data)
+
     // Decode and convert all strings in data records from Base64 to BSON objects
     for (const [key, values] of Object.entries(data)) {
       newData[Number(key)] = values.map((value) => {
-      const binary = atob(value);
-      const uint8Array = Uint8Array.from(binary, (char) => char.charCodeAt(0));
-      const bsonObject = BSON.deserialize(uint8Array);
+        const binary = atob(value);
+        const uint8Array = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+        const bsonObject = BSON.deserialize(uint8Array);
 
-      // Check if bsonObject.s is consistent
-      if (sessionValue === null) {
-        sessionValue = bsonObject.s;
-      } else if (sessionValue !== bsonObject.s) {
-        throw new Error("More than one session value found.");
-      }
+        // Check if bsonObject.s is consistent
+        if (sessionValue === null) {
+          sessionValue = bsonObject.s;
+        } else if (sessionValue !== bsonObject.s) {
+          throw new Error("More than one session value found.");
+        }
 
-      return bsonObject.c; // Extract the value of "c" from each BSON object
+        return bsonObject.c; // Extract the value of "c" from each BSON object
       });
     }
 
+
     data = newData;
+    console.log("Decoded data:", data);
     const classSessionId = sessionValue;
 
     // Fetch the secrets associated with the session

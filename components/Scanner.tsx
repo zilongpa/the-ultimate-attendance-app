@@ -55,27 +55,24 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
 
         // Process detected barcodes
         detectedCodes.forEach(detectedCode => {
-            const rawValue = detectedCode.rawValue;
-            let value = null;
-            if (isNaN(Number(rawValue))) {
-                try {
-                    const url = new URL(rawValue);
-                    if (origin && url.origin !== origin) {
-                        return; // Ignore if the URL origin doesn't match the app's origin
-                    }
-                    const cParam = url.searchParams.get("c");
-                    if (cParam) {
-                        value = Number(cParam);
-                    }
+            let value = detectedCode.rawValue;
+            try {
+                const url = new URL(value);
+                if (origin && url.origin !== origin) {
+                    return; // Ignore if the URL origin doesn't match the app's origin
                 }
-                catch { }
-            } else {
-                value = Number(rawValue); // Convert rawValue to number if it's numeric
+                const dParam = url.searchParams.get("d");
+                if (dParam) {
+                    value = dParam;
+                }
             }
+            catch { }
 
             if (value === null) {
                 return;
             }
+
+            console.log("Detected barcode:", value); // Log detected barcode value
 
             if (!data[timestamp].includes(String(value))) {
                 data[timestamp].push(String(value)); // Add unique barcode values
