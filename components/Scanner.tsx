@@ -48,9 +48,27 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
 
         // Process detected barcodes
         detectedCodes.forEach(detectedCode => {
-            const value = detectedCode.rawValue;
-            if (!data[timestamp].includes(value)) {
-                data[timestamp].push(value); // Add unique barcode values
+            const rawValue = detectedCode.rawValue;
+            let value = null;
+            if (isNaN(Number(rawValue))) {
+                try {
+                    const url = new URL(rawValue);
+                    const cParam = url.searchParams.get("c");
+                    if (cParam) {
+                        value = Number(cParam);
+                    }
+                }
+                catch { }
+            } else {
+                value = Number(rawValue); // Convert rawValue to number if it's numeric
+            }
+
+            if (value === null) {
+                return;
+            }
+
+            if (!data[timestamp].includes(String(value))) {
+                data[timestamp].push(String(value)); // Add unique barcode values
             }
         });
 

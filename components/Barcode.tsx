@@ -2,14 +2,24 @@
 "use client";
 import { toSVG } from "@bwip-js/generic";
 
-export default function Barcode({ data, rotate }: { data: string, rotate?: 0 | 1 | 2 | 3 }, isQR?: boolean) {
+export default function Barcode({ data, rotate, isQR }: { data: string, rotate?: 0 | 1 | 2 | 3, isQR?: boolean }) {
   // Generate the SVG string for the barcode or QR code
-  const svgString = toSVG({
+  
+  const svgOptions = {
     bcid: isQR ? "qrcode" : "datamatrix", // Use "qrcode" for QR codes, "datamatrix" for Data Matrix barcodes
     text: data, // The data to encode in the barcode/QR code
     scale: 3, // Scale factor for the barcode/QR code
-    rotate: (["R", "I", "N", "L",] as const)[rotate || 0] // Rotation: Right, Inverted, Normal, or Left
-  });
+    rotate: (["R", "I", "N", "L",] as const)[rotate || 0], // Rotation: Right, Inverted, Normal, or Left
+  }
+
+  // if (isQR) {
+  //   svgOptions = { ...svgOptions, ecLevel: "L" };
+  // } else {
+  //   svgOptions = { ...svgOptions, version: "22x22" };
+  // }
+
+
+  const svgString = toSVG(svgOptions);
 
   return (
     // The SVG generated is a rectangle instead of a square, so a negative margin-bottom is applied to adjust the layout

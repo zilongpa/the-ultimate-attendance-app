@@ -86,7 +86,7 @@ export default function Printer({
         >
             {barcodeData.map((data, index) => (
                 // Render each barcode with a unique rotation (0, 90, 180, or 270 degrees).
-                <Barcode key={index} data={data} rotate={index % 4 as 0 | 1 | 2 | 3} />
+                <Barcode key={index} data={index === 0 && window.location.origin !== undefined ? `${window.location.origin}/scan?c=${data}` : data} rotate={index === 0 && window.location.origin !== undefined ? 2 : index % 4 as 0 | 1 | 2 | 3} isQR={index === 0 && window.location.origin !== undefined} />
             ))}
         </motion.div>
     );
