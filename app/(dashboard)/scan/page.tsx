@@ -12,24 +12,18 @@ export default function Scan() {
     const sql = getSQL();
     const digits = process.env.TOTP_DIGITS ? Number(process.env.TOTP_DIGITS) : 8;
     const session = await auth();
+    console.log(data);
 
     // Fetch the latest session ID
-    const sessionQueryResult = await sql`
-      SELECT id, secret1, secret2, secret3, secret4
-      FROM sessions
-      WHERE end_time > NOW() 
-      ORDER BY id 
-      DESC 
-      LIMIT 1;
-    `;
+    const sessionQueryResult = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
     if (sessionQueryResult.length === 0) {
-      return "No active session found.";
+      return "No session ID found.";
     }
 
     const classSessionId = sessionQueryResult[0].id;
 
     // Fetch the secrets associated with the session
-    const secretsQueryResult = new Array(4).fill(null).map((_, index) => sessionQueryResult[0][`secret${index + 1}`]);
+    const secretsQueryResult = await sql`SELECT secret1, secret2, secret3, secret4 FROM sessions WHERE id = ${classSessionId};`;
     if (secretsQueryResult.length === 0) {
       return "No secrets found for the session.";
     }

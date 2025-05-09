@@ -1,7 +1,7 @@
 // By Junhui Huang
 
 "use client";
-import React from "react";
+import React, { use } from "react";
 import * as OTPAuth from "otpauth";
 import Barcode from "@/components/Barcode";
 import { useEffect, useState } from "react";
@@ -18,10 +18,19 @@ export default function Printer({
     period,
     digits,
 }: { secrets: string[]; period: number; digits: number }) {
+    const [origin, setOrigin] = useState<string | null>(null);
+
     // Ensure exactly four secrets are provided, as the component is designed for four barcodes.
     if (secrets.length !== 4) {
         throw new Error("Printer component requires exactly 4 secrets.");
     }
+
+    useEffect(() => {
+        // Check if the window object is available (i.e., the code is running in a browser environment).
+        if (typeof window !== "undefined") {
+            setOrigin(window.location.origin); // Set the origin to the current window's location.
+        }
+    }, []);
 
     // Initialize four TOTP instances using the provided secrets, period, and digits.
     const totps = Array.from({ length: 4 }, (_, index) =>
@@ -86,7 +95,7 @@ export default function Printer({
         >
             {barcodeData.map((data, index) => (
                 // Render each barcode with a unique rotation (0, 90, 180, or 270 degrees).
-                <Barcode key={index} data={index === 0 && window.location.origin !== undefined ? `${window.location.origin}/scan?c=${data}` : data} rotate={index === 0 && window.location.origin !== undefined ? 2 : index % 4 as 0 | 1 | 2 | 3} isQR={index === 0 && window.location.origin !== undefined} />
+                <Barcode key={index} data={index === 0 && origin ? `${origin}/scan?c=${data}` : data} rotate={index === 0 && origin ? 2 : index % 4 as 0 | 1 | 2 | 3} isQR={!!(index === 0 && origin)} />
             ))}
         </motion.div>
     );
