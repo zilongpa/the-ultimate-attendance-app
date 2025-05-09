@@ -14,15 +14,22 @@ export default function Scan() {
     const session = await auth();
 
     // Fetch the latest session ID
-    const sessionQueryResult = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
+    const sessionQueryResult = await sql`
+      SELECT id, secret1, secret2, secret3, secret4
+      FROM sessions
+      WHERE end_time > NOW() 
+      ORDER BY id 
+      DESC 
+      LIMIT 1;
+    `;
     if (sessionQueryResult.length === 0) {
-      return "No session ID found.";
+      return "No active session found.";
     }
 
     const classSessionId = sessionQueryResult[0].id;
 
     // Fetch the secrets associated with the session
-    const secretsQueryResult = await sql`SELECT secret1, secret2, secret3, secret4 FROM sessions WHERE id = ${classSessionId};`;
+    const secretsQueryResult = new Array(4).fill(null).map((_, index) => sessionQueryResult[0][`secret${index + 1}`]);
     if (secretsQueryResult.length === 0) {
       return "No secrets found for the session.";
     }
@@ -63,19 +70,19 @@ export default function Scan() {
 
       // Drop intervals that are too old
       if (currentTime - timestamp > 8 * period * 1000) {
-      continue;
+        continue;
       }
 
       const uniqueValues = values.filter((value) => {
-      if (seenStrings.has(value)) {
-        return false;
-      }
-      seenStrings.add(value);
-      return true;
+        if (seenStrings.has(value)) {
+          return false;
+        }
+        seenStrings.add(value);
+        return true;
       });
 
       if (uniqueValues.length >= 2) {
-      filteredData[timestamp] = uniqueValues;
+        filteredData[timestamp] = uniqueValues;
       }
     }
 
