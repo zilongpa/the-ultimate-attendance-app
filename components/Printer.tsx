@@ -1,7 +1,6 @@
 // By Junhui Huang
 
 "use client";
-import React, { use } from "react";
 import * as OTPAuth from "otpauth";
 import Barcode from "@/components/Barcode";
 import { useEffect, useState } from "react";
