@@ -40,7 +40,7 @@ export default async function GetSessionAttendance({
                     mb: 3,
                 }}
             >
-                <Printer secrets={secretsArray} period={2} digits={8} />
+                <Printer secrets={secretsArray} period={2} digits={8} sessionId={thisSessionId}/>
             </Box>
             <StaticAttendanceTable session_id={thisSessionId} />
         </PageContainer>

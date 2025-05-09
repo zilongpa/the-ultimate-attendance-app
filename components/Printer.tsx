@@ -5,6 +5,7 @@ import * as OTPAuth from "otpauth";
 import Barcode from "@/components/Barcode";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
+import { BSON } from 'bson';
 
 /**
  * Printer component renders four rotating OTP barcodes with periodic updates.
@@ -16,7 +17,8 @@ export default function Printer({
     secrets,
     period,
     digits,
-}: { secrets: string[]; period: number; digits: number }) {
+    sessionId
+}: { secrets: string[], period: number, digits: number, sessionId: number }) {
     const [origin, setOrigin] = useState<string | null>(null);
 
     // Ensure exactly four secrets are provided, as the component is designed for four barcodes.
@@ -31,6 +33,7 @@ export default function Printer({
         }
     }, []);
 
+
     // Initialize four TOTP instances using the provided secrets, period, and digits.
     const totps = Array.from({ length: 4 }, (_, index) =>
         new OTPAuth.TOTP({
@@ -42,7 +45,7 @@ export default function Printer({
 
     // State to store the current OTP values for the barcodes.
     const [barcodeData, setBarcodeData] = useState(
-        totps.map((totp) => totp.generate())
+        totps.map((totp) => btoa(String.fromCharCode(...Array.from(BSON.serialize({ s: sessionId, c: totp.generate() }))))) // Generate initial OTPs and serialize them to BSON format.
     );
 
     // State to manage the blur animation during barcode updates.
@@ -53,7 +56,7 @@ export default function Printer({
         const updateBarcode = () => {
             setIsUpdating(true); // Trigger blur animation.
             setTimeout(() => {
-                setBarcodeData(totps.map((totp) => totp.generate())); // Generate new OTPs.
+                setBarcodeData(totps.map((totp) => btoa(String.fromCharCode(...BSON.serialize({ s: sessionId, c: totp.generate() }))))); // Generate new OTPs.
                 setIsUpdating(false); // End blur animation.
             }, 300); // Animation duration.
         };
@@ -94,7 +97,7 @@ export default function Printer({
         >
             {barcodeData.map((data, index) => (
                 // Render each barcode with a unique rotation (0, 90, 180, or 270 degrees).
-                <Barcode key={index} data={index === 0 && origin ? `${origin}/scan?c=${data}` : data} rotate={index === 0 && origin ? 2 : index % 4 as 0 | 1 | 2 | 3} isQR={!!(index === 0 && origin)} />
+                <Barcode key={index} data={index === 0 && origin ? `${origin}/scan?d=${data}` : data} rotate={index === 0 && origin ? 2 : index % 4 as 0 | 1 | 2 | 3} isQR={!!(index === 0 && origin)} />
             ))}
         </motion.div>
     );

@@ -3,6 +3,7 @@ import Scanner from "@/components/Scanner";
 import * as OTPAuth from "otpauth";
 import { getSQL } from "@/db";
 import { auth } from "@/auth";
+import { BSON } from 'bson';
 
 export default function Scan() {
   const period = process.env.TOTP_PERIOD ? Number(process.env.TOTP_PERIOD) : 2;
@@ -12,15 +13,29 @@ export default function Scan() {
     const sql = getSQL();
     const digits = process.env.TOTP_DIGITS ? Number(process.env.TOTP_DIGITS) : 8;
     const session = await auth();
-    console.log(data);
+    const newData: Record<number, string[]> = {};
+    let sessionValue: string | null = null;
 
-    // Fetch the latest session ID
-    const sessionQueryResult = await sql`SELECT id FROM sessions ORDER BY id DESC LIMIT 1;`;
-    if (sessionQueryResult.length === 0) {
-      return "No session ID found.";
+    // Decode and convert all strings in data records from Base64 to BSON objects
+    for (const [key, values] of Object.entries(data)) {
+      newData[Number(key)] = values.map((value) => {
+      const binary = atob(value);
+      const uint8Array = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+      const bsonObject = BSON.deserialize(uint8Array);
+
+      // Check if bsonObject.s is consistent
+      if (sessionValue === null) {
+        sessionValue = bsonObject.s;
+      } else if (sessionValue !== bsonObject.s) {
+        throw new Error("More than one session value found.");
+      }
+
+      return bsonObject.c; // Extract the value of "c" from each BSON object
+      });
     }
 
-    const classSessionId = sessionQueryResult[0].id;
+    data = newData;
+    const classSessionId = sessionValue;
 
     // Fetch the secrets associated with the session
     const secretsQueryResult = await sql`SELECT secret1, secret2, secret3, secret4 FROM sessions WHERE id = ${classSessionId};`;

@@ -3,7 +3,7 @@
 
 import { Scanner as BarcodeScanner, IDetectedBarcode, useDevices } from "@yudiel/react-qr-scanner";
 import { FormControl, InputLabel, LinearProgress, MenuItem, Select, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
@@ -13,13 +13,20 @@ import { useNotifications } from '@toolpad/core/useNotifications';
 export default function Scanner({ submitAction, period }: { submitAction: (data: Record<number, string[]>) => Promise<string | null>, period: number }) {
     // Retrieve available devices for the scanner
     const devices = useDevices();
-
-    let data: Record<number, string[]> = {}; // Stores scanned data for each timestamp
     const [progress, setProgress] = useState(0); // Current progress bar value
     const [progressBuffer, setProgressBuffer] = useState(0); // Buffer value for progress bar
     const [description, setDescription] = useState("Use your device to scan the pixel area..."); // Instructional text for the user
     const [pauseCamera, setPauseCamera] = useState(false); // State to pause the camera
+    const [origin, setOrigin] = useState<string | null>(null); // Origin URL for the app
+    let data: Record<number, string[]> = {}; // Stores scanned data for each timestamp
     let savedDeviceId = ""; // Saved device ID retrieved from localStorage
+
+    useEffect(() => {
+        // Check if the window object is available (i.e., the code is running in a browser environment).
+        if (typeof window !== "undefined") {
+            setOrigin(window.location.origin); // Set the origin to the current window's location.
+        }
+    }, [])
 
     // Retrieve saved device ID from localStorage
     // Note: Using useEffect here caused issues due to frequent updates from useDevices.
@@ -53,6 +60,9 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
             if (isNaN(Number(rawValue))) {
                 try {
                     const url = new URL(rawValue);
+                    if (origin && url.origin !== origin) {
+                        return; // Ignore if the URL origin doesn't match the app's origin
+                    }
                     const cParam = url.searchParams.get("c");
                     if (cParam) {
                         value = Number(cParam);
