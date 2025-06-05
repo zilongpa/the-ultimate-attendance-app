@@ -138,7 +138,7 @@ export default function Scanner({ submitAction, period }: { submitAction: (data:
                 setDescription("An error occurred. Please try again.");
             }}
             formats={["data_matrix", "qr_code"]} // Supported barcode formats for optimized performance
-            components={{ finder: false }} // Disable finder UI for simplicity
+            components={{ finder: false, zoom: true }} // Disable finder UI for simplicity
             paused={pauseCamera} // Pause camera if needed
             sound={false} // Disable sound for a quieter experience
             styles={{
